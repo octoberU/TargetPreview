@@ -49,6 +49,17 @@ namespace TargetPreview.Models
             this.time = time;
             this.transformData = transformData;
         }
+        /// <summary>
+        /// A constructor for creating placeholder targetData.
+        /// </summary>
+        /// <param name="placeHolder"></param>
+        public TargetData(bool placeHolder)
+        {
+            this.behavior = TargetBehavior.Standard;
+            this.handType = TargetHandType.Left;
+            this.time = 0;
+            this.transformData = new TargetPosition(new Quaternion(), new Vector3());
+        }
     }
 
     public struct TargetPosition
