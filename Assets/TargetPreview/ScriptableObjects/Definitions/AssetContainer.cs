@@ -9,12 +9,7 @@ namespace TargetPreview.ScriptableObjects
     public class AssetContainer : SingletonScriptableObject<AssetContainer>
     {
         [Header("Audio")]
-        public AudioClip kick;
-        public AudioClip snare;
-        public AudioClip percussion;
-        public AudioClip chainStart;
-        public AudioClip chain;
-        public AudioClip melee;
+        public DrumPack drumpack;
 
         [Header("Mesh data")]
         public Mesh standardMesh;
@@ -24,6 +19,15 @@ namespace TargetPreview.ScriptableObjects
         public Mesh chainMesh;
         public Mesh meleeMesh;
         public Mesh dodgeMesh;
+
+        [Header("Texture data")]
+        public Texture2D standardTexture;
+        public Texture2D sustainTexture;
+        public Texture2D angleTexture;
+        public Texture2D chainStartTexture;
+        public Texture2D chainTexture;
+        public Texture2D meleeTexture;
+        public Texture2D dodgeTexture;
 
         public static Mesh GetMeshForBehavior(TargetBehavior behavior) =>
             behavior switch

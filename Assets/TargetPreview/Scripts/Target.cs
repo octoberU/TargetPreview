@@ -3,10 +3,22 @@ using TargetPreview.ScriptableObjects;
 
 namespace TargetPreview.Models
 {
+    [RequireComponent(typeof(MeshFilter))]
+    [RequireComponent(typeof(MeshRenderer))]
+    [RequireComponent(typeof(Animator))]
     public class Target : MonoBehaviour
     {
+        #region References
         MeshFilter meshFilter;
         MeshRenderer meshRenderer;
+        Animator animator;
+        public virtual void Awake()
+        {
+            meshFilter = GetComponent<MeshFilter>();
+            meshRenderer = GetComponent<MeshRenderer>();
+            animator = GetComponent<Animator>();
+        }
+        #endregion
 
         protected TargetData targetData;
         /// <summary>
@@ -20,7 +32,6 @@ namespace TargetPreview.Models
             meshFilter.mesh = AssetContainer.GetMeshForBehavior(targetData.behavior);
             meshRenderer.material.color = VisualConfig.GetColorForHandType(TargetData.handType);
         }
-
         public virtual void Update() { }
     }
 
