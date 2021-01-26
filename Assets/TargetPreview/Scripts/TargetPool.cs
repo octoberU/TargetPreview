@@ -6,8 +6,9 @@ namespace TargetPreview.Display
 {
     public class TargetPool : MonoBehaviour
     {
+        [SerializeField] Target targetPrefab;
+
         const int poolSize = 200;
-        Target targetPrefab;
         Stack<Target> targetPool = new Stack<Target>();
 
         void Awake() => 
@@ -15,7 +16,7 @@ namespace TargetPreview.Display
         
         void FillPool(int size)
         {
-            for (int i = 0; i < poolSize; i++)
+            for (int i = 0; i < size; i++)
                 CreateTarget();
         }
 
