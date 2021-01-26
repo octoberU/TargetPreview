@@ -11,6 +11,13 @@ using UnityEngine;
 public abstract class SingletonScriptableObject<T> : ScriptableObject where T : ScriptableObject
 {
     static T _instance = null;
+    
+    [RuntimeInitializeOnLoadMethod]
+    void Init()
+    {
+        _instance = Resources.FindObjectsOfTypeAll<T>().FirstOrDefault();
+    }
+
     public static T Instance
     {
         get
