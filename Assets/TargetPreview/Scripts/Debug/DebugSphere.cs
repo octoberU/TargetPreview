@@ -15,6 +15,9 @@ namespace Assets.TargetPreview.Scripts.Debug
 
         int pitchCount = 83;
 
+        void Start() => 
+            CreateDebugSphere();
+
         [ContextMenu("Create debug sphere")]
         void CreateDebugSphere()
         {
