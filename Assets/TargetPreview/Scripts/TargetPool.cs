@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using TargetPreview.Models;
+using TargetPreview.ScriptableObjects;
 using UnityEngine;
 
 namespace TargetPreview.Display
 {
     public class TargetPool : MonoBehaviour
     {
+        [SerializeField] AssetContainer assetContainer;
+        [SerializeField] VisualConfig visualConfig;
         [SerializeField] Target targetPrefab;
 
         const int poolSize = 200;

@@ -32,6 +32,8 @@ namespace TargetPreview.Models
             meshFilter.mesh = AssetContainer.GetMeshForBehavior(targetData.behavior);
             meshRenderer.material.color = VisualConfig.GetColorForHandType(targetData.handType);
             meshRenderer.material.mainTexture = AssetContainer.GetTextureForBehavior(targetData.behavior);
+            transform.position = targetData.transformData.position;
+            transform.rotation = targetData.transformData.rotation;
         }
         public virtual void Update() { }
     }

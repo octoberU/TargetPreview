@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using UnityEngine;
 using TargetPreview.Models;
 
 namespace TargetPreview.Math
@@ -11,7 +7,7 @@ namespace TargetPreview.Math
     {
         public static TargetPosition CalculateTargetTransform(int pitch, (float, float, float) offset)
         {
-            return new TargetPosition();
+            return new TargetPosition(new Quaternion(), new Vector3());
         }
     }
 }
