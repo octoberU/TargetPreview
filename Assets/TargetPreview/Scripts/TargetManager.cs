@@ -6,6 +6,4 @@ using UnityEngine;
 
 public class TargetManager : MonoBehaviour
 {
-    [SerializeField] AssetContainer assetContainer;
-    [SerializeField] VisualConfig visualConfig;
 }
