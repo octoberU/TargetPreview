@@ -30,7 +30,8 @@ namespace TargetPreview.Models
         protected void UpdateVisuals()
         {
             meshFilter.mesh = AssetContainer.GetMeshForBehavior(targetData.behavior);
-            meshRenderer.material.color = VisualConfig.GetColorForHandType(TargetData.handType);
+            meshRenderer.material.color = VisualConfig.GetColorForHandType(targetData.handType);
+            meshRenderer.material.mainTexture = AssetContainer.GetTextureForBehavior(targetData.behavior);
         }
         public virtual void Update() { }
     }
@@ -55,7 +56,7 @@ namespace TargetPreview.Models
         /// <param name="placeHolder"></param>
         public TargetData(bool placeHolder)
         {
-            this.behavior = TargetBehavior.Standard;
+            this.behavior = TargetBehavior.Hold;
             this.handType = TargetHandType.Left;
             this.time = 0;
             this.transformData = new TargetPosition(new Quaternion(), new Vector3());

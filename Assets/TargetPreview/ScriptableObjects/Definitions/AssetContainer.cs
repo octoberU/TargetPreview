@@ -42,6 +42,20 @@ namespace TargetPreview.ScriptableObjects
                 TargetBehavior.Dodge => Instance.dodgeMesh,
                 _ => default,
             };
+
+        public static Texture2D GetTextureForBehavior(TargetBehavior behavior) =>
+            behavior switch
+            {
+                TargetBehavior.Standard => Instance.standardTexture,
+                TargetBehavior.Hold => Instance.sustainTexture,
+                TargetBehavior.Horizontal => Instance.angleTexture,
+                TargetBehavior.Vertical => Instance.angleTexture,
+                TargetBehavior.Chain => Instance.chainTexture,
+                TargetBehavior.ChainStart => Instance.chainStartTexture,
+                TargetBehavior.Melee => Instance.meleeTexture,
+                TargetBehavior.Dodge => Instance.dodgeTexture,
+                _ => default,
+            };
     }
 
 }
