@@ -12,6 +12,7 @@ namespace TargetPreview.Models
         /// A reference to the physical target that needs a fly-in animation.
         /// </summary>
         Transform physicalTarget;
+        MeshRenderer telegraph;
         MeshFilter meshFilter;
         MeshRenderer meshRenderer;
         public virtual void Awake()
@@ -19,6 +20,7 @@ namespace TargetPreview.Models
             physicalTarget = transform.Find("PhysicalTarget");
             meshFilter = physicalTarget.GetComponent<MeshFilter>();
             meshRenderer = physicalTarget.GetComponent<MeshRenderer>();
+            telegraph = transform.Find("Telegraph").GetComponent<MeshRenderer>();
             TargetData = new TargetData(placeHolder: true); //DEBUG
         }
         #endregion
@@ -44,20 +46,43 @@ namespace TargetPreview.Models
         /// Contains all target data which influences the target's appearance.
         /// </summary>
         /// <remarks>Setting this to a new value will update all the visuals.</remarks>
-        public TargetData TargetData { get => targetData; set { targetData = value; UpdateVisuals(); } }
+        public TargetData TargetData { get => targetData; set { targetData = value; UpdateVisuals(value); } }
 
         /// <summary>
         /// Update target's appearance based on targetData.
         /// </summary>
         /// <remarks>Inherited types might need to call base then add their own implementation</remarks>
-        public virtual void UpdateVisuals()
+        public virtual void UpdateVisuals(TargetData newData)
         {
-            meshFilter.mesh = AssetContainer.GetMeshForBehavior(targetData.behavior);
-            currentHandColor = meshRenderer.material.color = VisualConfig.GetColorForHandType(targetData.handType);
-            meshRenderer.material.mainTexture = AssetContainer.GetTextureForBehavior(targetData.behavior);
-            transform.position = targetData.transformData.position;
-            transform.rotation = targetData.transformData.rotation;
+            meshFilter.mesh = AssetContainer.GetMeshForBehavior(newData.behavior);
+            currentHandColor = VisualConfig.GetColorForHandType(newData.handType);
+            meshRenderer.material.mainTexture = AssetContainer.GetTextureForBehavior(newData.behavior);
+            transform.position = newData.transformData.position;
+            transform.rotation = newData.transformData.rotation;
+            UpdateTelegraphVisuals(newData);
         }
+
+        private void UpdateTelegraphVisuals(TargetData newData)
+        {
+            TelegraphPreset telegraphPreset = AssetContainer.GetTelegraphForBehavior(newData.behavior);
+            if (telegraphPreset != null)
+            {
+                telegraph.gameObject.SetActive(true);
+                telegraph.material.mainTexture = telegraphPreset.cloudTexture;
+                telegraph.material.SetTexture("_MaskTex", telegraphPreset.maskTexture);
+                telegraph.material.color = VisualConfig.GetTelegraphColorForHandType(newData.handType);
+                telegraph.material.SetFloat("_Strength", telegraphPreset.twirlAmount);
+                telegraph.material.SetFloat("_Scale", telegraphPreset.cloudSize);
+                telegraph.material.SetFloat("_Spherize", telegraphPreset.spherizeAmount);
+                telegraph.material.SetFloat("_SpinSpeed", telegraphPreset.spinSpeed);
+                telegraph.material.SetFloat("_MaskScale", telegraphPreset.maskSize);
+            }
+            else
+            {
+                telegraph.gameObject.SetActive(false);
+            }
+        }
+
         void Update() =>
             AnimatePhysicalTarget(time);
 
@@ -89,6 +114,7 @@ namespace TargetPreview.Models
         }
     }
 
+    [System.Serializable]
     public struct TargetData
     {
         public TargetBehavior behavior;
@@ -109,7 +135,7 @@ namespace TargetPreview.Models
         /// <param name="placeHolder"></param>
         public TargetData(bool placeHolder)
         {
-            this.behavior = TargetBehavior.Hold;
+            this.behavior = TargetBehavior.Standard;
             this.handType = TargetHandType.Left;
             this.time = 1000;
             this.transformData = new TargetPosition(new Quaternion(), new Vector3());
