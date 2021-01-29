@@ -12,6 +12,9 @@ namespace TargetPreview.Models
         /// A reference to the physical target that needs a fly-in animation.
         /// </summary>
         Transform physicalTarget;
+        MeshRenderer approachRing;
+        MeshFilter approachRingFilter;
+        TrailRenderer trailRenderer;
         MeshRenderer telegraph;
         MeshFilter meshFilter;
         MeshRenderer meshRenderer;
@@ -21,6 +24,10 @@ namespace TargetPreview.Models
             meshFilter = physicalTarget.GetComponent<MeshFilter>();
             meshRenderer = physicalTarget.GetComponent<MeshRenderer>();
             telegraph = transform.Find("Telegraph").GetComponent<MeshRenderer>();
+            trailRenderer = physicalTarget.GetComponent<TrailRenderer>();
+            approachRing = transform.Find("Ring").GetComponent<MeshRenderer>();
+            approachRingFilter = approachRing.GetComponent<MeshFilter>();
+            approachRingStartSize = approachRing.transform.localScale;
             TargetData = new TargetData(placeHolder: true); //DEBUG
         }
         #endregion
@@ -38,6 +45,11 @@ namespace TargetPreview.Models
         /// The influence of <see cref="flyInDistance"/> on vertical position in the fly-in animation.
         /// </summary>
         public float verticalInfluence = 0.2f;
+        /// <summary>
+        /// Start size of the approach ring.
+        /// </summary>
+        /// <remarks>This is captured during <see cref="Awake"/></remarks>
+        public Vector3 approachRingStartSize;
 
         Color currentHandColor;
 
@@ -59,10 +71,32 @@ namespace TargetPreview.Models
             meshRenderer.material.mainTexture = AssetContainer.GetTextureForBehavior(newData.behavior);
             transform.position = newData.transformData.position;
             transform.rotation = newData.transformData.rotation;
+            
+            //Reset transforms
+            telegraph.transform.rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+            physicalTarget.transform.rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+            approachRing.transform.rotation = Quaternion.identity;
+
             UpdateTelegraphVisuals(newData);
+            trailRenderer.startColor = currentHandColor;
+            approachRing.material.color = VisualConfig.GetTelegraphColorForHandType(newData.handType);
+            approachRingFilter.mesh = AssetContainer.GetApproachRingForBehavior(newData.behavior);
+            
+            //Fix orientation for angled targets
+            if(newData.behavior == TargetBehavior.Vertical)
+            {
+                approachRing.transform.rotation = Quaternion.Euler(new Vector3(0, 0, -90));
+                telegraph.transform.Rotate(-180, -90, 180);
+            }
+            else if (newData.behavior == TargetBehavior.Horizontal)
+            {
+                physicalTarget.Rotate(-180, -90, 180);
+                telegraph.transform.rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+            }
         }
 
-        private void UpdateTelegraphVisuals(TargetData newData)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        void UpdateTelegraphVisuals(TargetData newData)
         {
             TelegraphPreset telegraphPreset = AssetContainer.GetTelegraphForBehavior(newData.behavior);
             if (telegraphPreset != null)
@@ -98,7 +132,14 @@ namespace TargetPreview.Models
             
             AnimateFlyIn(distance);
             
+            //Fade in physical target
             meshRenderer.material.color = Color.Lerp(currentHandColor, Color.black, distance * distance);
+
+            if (distance > 0.99f) 
+                approachRing.transform.localScale = Vector3.zero;
+            else 
+                approachRing.transform.localScale = Vector3.Lerp(Vector3.zero, approachRingStartSize, -(distance * (distance - 2))); //Quadratic ease out. This might need to be linear
+
         }
 
         /// <summary>
@@ -137,7 +178,7 @@ namespace TargetPreview.Models
         {
             this.behavior = TargetBehavior.Standard;
             this.handType = TargetHandType.Left;
-            this.time = 1000;
+            this.time = 500;
             this.transformData = new TargetPosition(new Quaternion(), new Vector3());
         }
     }
