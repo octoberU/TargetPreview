@@ -27,3 +27,6 @@ MonoBehaviour:
   chainTexture: {fileID: 2800000, guid: c88d4ab1c3a55074fa15c332434a4b82, type: 3}
   meleeTexture: {fileID: 0}
   dodgeTexture: {fileID: 0}
+  standardTelegraph: {fileID: 11400000, guid: 2715fb1d26fd9b948861f1fb052493e9, type: 2}
+  sustainTelegraph: {fileID: 11400000, guid: 6f7b58b0b89be034ca5609c003a5d1f0, type: 2}
+  angleTelegraph: {fileID: 11400000, guid: 04ae98185624bca41a0e435ca8c9d051, type: 2}

@@ -29,6 +29,11 @@ namespace TargetPreview.ScriptableObjects
         public Texture2D meleeTexture;
         public Texture2D dodgeTexture;
 
+        [Header("Telegraph presets")]
+        public TelegraphPreset standardTelegraph;
+        public TelegraphPreset sustainTelegraph;
+        public TelegraphPreset angleTelegraph;
+
         public static Mesh GetMeshForBehavior(TargetBehavior behavior) =>
             behavior switch
             {
@@ -56,6 +61,18 @@ namespace TargetPreview.ScriptableObjects
                 TargetBehavior.Dodge => Instance.dodgeTexture,
                 _ => default,
             };
+
+        public static TelegraphPreset GetTelegraphForBehavior(TargetBehavior behavior) =>
+        behavior switch
+        {
+            TargetBehavior.Standard => Instance.standardTelegraph,
+            TargetBehavior.Hold => Instance.sustainTelegraph,
+            TargetBehavior.Horizontal => Instance.angleTelegraph,
+            TargetBehavior.Vertical => Instance.angleTelegraph,
+            TargetBehavior.ChainStart => Instance.sustainTelegraph,
+            _ => null,
+        };
+
     }
 
 }
