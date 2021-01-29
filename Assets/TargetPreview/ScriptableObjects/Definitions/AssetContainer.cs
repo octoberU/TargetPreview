@@ -34,6 +34,11 @@ namespace TargetPreview.ScriptableObjects
         public TelegraphPreset sustainTelegraph;
         public TelegraphPreset angleTelegraph;
 
+        [Header("Approach rings")]
+        public Mesh circleRing;
+        public Mesh squareRing;
+        public Mesh angleRing;
+
         public static Mesh GetMeshForBehavior(TargetBehavior behavior) =>
             behavior switch
             {
@@ -70,6 +75,17 @@ namespace TargetPreview.ScriptableObjects
             TargetBehavior.Horizontal => Instance.angleTelegraph,
             TargetBehavior.Vertical => Instance.angleTelegraph,
             TargetBehavior.ChainStart => Instance.sustainTelegraph,
+            _ => null,
+        };
+
+        public static Mesh GetApproachRingForBehavior(TargetBehavior behavior) =>
+        behavior switch
+        {
+            TargetBehavior.Standard => Instance.circleRing,
+            TargetBehavior.Hold => Instance.squareRing,
+            TargetBehavior.Horizontal => Instance.angleRing,
+            TargetBehavior.Vertical => Instance.angleRing,
+            TargetBehavior.ChainStart => Instance.squareRing,
             _ => null,
         };
 
