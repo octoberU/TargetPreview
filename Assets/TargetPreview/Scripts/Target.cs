@@ -69,13 +69,13 @@ namespace TargetPreview.Models
             meshFilter.mesh = AssetContainer.GetMeshForBehavior(newData.behavior);
             currentHandColor = VisualConfig.GetColorForHandType(newData.handType);
             meshRenderer.material.mainTexture = AssetContainer.GetTextureForBehavior(newData.behavior);
-            transform.position = newData.transformData.position;
-            transform.rotation = newData.transformData.rotation;
+            transform.localPosition = newData.transformData.position;
+            transform.localRotation = newData.transformData.rotation;
             
             //Reset transforms
-            telegraph.transform.rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
-            physicalTarget.transform.rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
-            approachRing.transform.rotation = Quaternion.identity;
+            telegraph.transform.localRotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+            physicalTarget.transform.localRotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+            approachRing.transform.localRotation = Quaternion.identity;
 
             UpdateTelegraphVisuals(newData);
             trailRenderer.startColor = currentHandColor;
@@ -85,13 +85,13 @@ namespace TargetPreview.Models
             //Fix orientation for angled targets
             if(newData.behavior == TargetBehavior.Vertical)
             {
-                approachRing.transform.rotation = Quaternion.Euler(new Vector3(0, 0, -90));
-                telegraph.transform.Rotate(-180, -90, 180);
+                approachRing.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, -90));
+                telegraph.transform.Rotate(-180, -90, 180, Space.Self);
             }
             else if (newData.behavior == TargetBehavior.Horizontal)
             {
-                physicalTarget.Rotate(-180, -90, 180);
-                telegraph.transform.rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+                physicalTarget.Rotate(-180, -90, 180, Space.Self);
+                telegraph.transform.localRotation = Quaternion.Euler(new Vector3(-90, 0, 0));
             }
         }
 
