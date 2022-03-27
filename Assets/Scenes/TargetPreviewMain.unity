@@ -607,9 +607,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b97207f8016d0643a2860dc5bdfb1d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pitchCount: 12
+  pitchCount: 85
   randomOffset: {x: 0, y: 0, z: 0}
   offset: {x: 0, y: 0, z: 0}
+  debugTime: 0
+  timeOffsetPerTarget: 480
 --- !u!4 &1048961141
 Transform:
   m_ObjectHideFlags: 0

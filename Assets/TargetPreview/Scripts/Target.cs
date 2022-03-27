@@ -110,6 +110,9 @@ namespace TargetPreview.Models
                 telegraph.material.SetFloat("_Spherize", telegraphPreset.spherizeAmount);
                 telegraph.material.SetFloat("_SpinSpeed", telegraphPreset.spinSpeed);
                 telegraph.material.SetFloat("_MaskScale", telegraphPreset.maskSize);
+                telegraph.material.SetFloat("_TargetTime", newData.time);
+                telegraph.material.SetFloat("_FadeInDuration", flyInTime);
+                telegraph.material.SetFloat("_FadeOutDuration", flyInTime / 4f);
             }
             else
             {
@@ -125,9 +128,9 @@ namespace TargetPreview.Models
         /// </summary>
         /// <param name="time">Time in the current song</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public virtual void AnimatePhysicalTarget(uint time)
+        public virtual void AnimatePhysicalTarget(float time)
         {
-            float timeDifference = TargetData.time - (float)time;
+            float timeDifference = TargetData.time - time;
             float distance = (Mathf.Clamp(timeDifference, 0f, flyInTime) / flyInTime);
             
             AnimateFlyIn(distance);
@@ -140,6 +143,7 @@ namespace TargetPreview.Models
             else 
                 approachRing.transform.localScale = Vector3.Lerp(Vector3.zero, approachRingStartSize, -(distance * (distance - 2))); //Quadratic ease out. This might need to be linear
 
+            physicalTarget.gameObject.SetActive(time < TargetData.time && timeDifference < flyInTime);
         }
 
         /// <summary>
@@ -160,10 +164,10 @@ namespace TargetPreview.Models
     {
         public TargetBehavior behavior;
         public TargetHandType handType;
-        public uint time;
+        public float time;
         public TargetPosition transformData;
 
-        public TargetData(TargetBehavior behavior, TargetHandType color, uint time, TargetPosition transformData)
+        public TargetData(TargetBehavior behavior, TargetHandType color, float time, TargetPosition transformData)
         {
             this.behavior = behavior;
             this.handType = color;

@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "TargetPreview/Telegraph"
 {
     Properties
@@ -11,6 +13,11 @@ Shader "TargetPreview/Telegraph"
         _Rotate("Rotate", Float) = 1.0
         _SpinSpeed("Spin Speed", Float) = 1.0
         _MaskScale("Mask Scale", Float) = 1.0
+        
+        //Fading in and out
+        _FadeInDuration("Fade out duration", Float) = 100.0
+        _FadeOutDuration("Fade in duration", Float) = 100.0
+        _TargetTime("Current target time (Set in c#)", Float) = 0
     }
     SubShader
     {
@@ -54,6 +61,10 @@ Shader "TargetPreview/Telegraph"
             fixed _Rotate;
             fixed _SpinSpeed;
             fixed _MaskScale;
+            fixed _GlobalTime;
+            fixed _FadeOutDuration;
+            fixed _FadeInDuration;
+            fixed _TargetTime;
 
             
             fixed2 Twirl(fixed2 UV, fixed2 Center, fixed Strength, fixed2 Offset)
@@ -95,17 +106,23 @@ Shader "TargetPreview/Telegraph"
                 UV += Center;
                 return UV;
             }
+            
 
 
             v2f vert (appdata v)
             {
                 v2f o;
+                //fixed fadeOut = clamp(((_GlobalTime - _TargetTime ) / _FadeOutDuration), 0, 1);
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.uv2 = Scale(_MaskScale, TRANSFORM_TEX(v.uv2, _MaskTex));
                 o.uv = Rotate(o.uv, fixed2(0.5,0.5), _Rotate + (_Time.y * _SpinSpeed));
                 o.uv = Scale(_Scale, o.uv);
                 o.uv = Twirl(o.uv, fixed2(0.5,0.5), _Strength, fixed2(0,0));
+
+                //fixed fadeOut = clamp(1 - (((_GlobalTime + _FadeOutDuration) - (_TargetTime) ) / _FadeOutDuration), 0, 1);
+                //o.vertex = UnityObjectToClipPos(v.vertex * fadeOut);
+
 
                 o.uv = Spherize(o.uv, fixed2(0.5, 0.5), _Spherize, fixed2(0,0));
                 UNITY_TRANSFER_FOG(o,o.vertex);
@@ -114,6 +131,8 @@ Shader "TargetPreview/Telegraph"
 
             fixed4 frag (v2f i) : SV_Target
             {
+                
+
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);
                 //apply telegraph mask
@@ -122,6 +141,10 @@ Shader "TargetPreview/Telegraph"
                 fixed4 tint = mask * _Color;
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
+
+                fixed fadeIn = clamp((1 * (((_GlobalTime + _FadeInDuration) - _TargetTime ) / _FadeInDuration)) + 1, 0, 1); //Fade in the target by duration.
+                fixed fadeOut = clamp(1 - (((_GlobalTime + _FadeOutDuration) - (_TargetTime) ) / _FadeOutDuration), 0, 1);
+                tint *= fixed4(1, 1, 1, min(fadeIn,fadeOut));
                 return tint;
             }
 
