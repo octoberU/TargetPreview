@@ -38,6 +38,11 @@ namespace TargetPreview.Display
         /// <returns>A reference to the target</returns>
         public Target Take(TargetData data)
         {
+            if(targetPool.Count == 0)
+            {
+                CreateTarget();
+            }
+
             Target storedTarget = targetPool.Pop();
             storedTarget
                 .TargetData = data;

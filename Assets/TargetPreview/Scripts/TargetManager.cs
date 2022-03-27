@@ -6,4 +6,5 @@ using UnityEngine;
 
 public class TargetManager : MonoBehaviour
 {
+    public static uint Time { get; set; }
 }

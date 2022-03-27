@@ -63,3 +63,7 @@ crashlytics-build.properties
 
 
 .idea/
+
+Packages/
+ProjectSettings/
+UserSettings/

@@ -118,7 +118,7 @@ namespace TargetPreview.Models
         }
 
         void Update() =>
-            AnimatePhysicalTarget(time);
+            AnimatePhysicalTarget(TargetManager.Time);
 
         /// <summary>
         /// Animate target based on time.
