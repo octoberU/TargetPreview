@@ -64,6 +64,10 @@ crashlytics-build.properties
 
 .idea/
 
+<<<<<<< HEAD
 Packages/
 ProjectSettings/
 UserSettings/
+=======
+UserSettings/Layouts/
+>>>>>>> main
