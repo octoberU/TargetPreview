@@ -120,7 +120,7 @@ namespace TargetPreview.Models
             }
         }
 
-        void Update() =>
+        public void Update() =>
             AnimatePhysicalTarget(TargetManager.Time);
 
         /// <summary>

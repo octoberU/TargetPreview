@@ -47,7 +47,9 @@ namespace TargetPreview.Display
             storedTarget
                 .TargetData = data;
             storedTarget
-                .transform.SetParent(null); // Unparented objects perform better,
+                .transform.SetParent(null);
+            storedTarget
+                .Update();                  // Unparented objects perform better,
             storedTarget                    // but it might be unnecessary.
                 .gameObject.SetActive(true);
             return storedTarget;
