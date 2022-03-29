@@ -67,6 +67,19 @@ namespace TargetPreview.Math
                 => -4 * height * x * x + 4 * height * x;
         }
 
+        public static Vector3 MeleeParabola(Vector3 start, Vector3 end, float height, float width, float t, float direction)
+        {
+            var mid = Vector3.Lerp(start, end, t);
+
+            return new Vector3((GetWidth(t) + Mathf.Lerp(start.x, end.x, t)) * direction, (GetHeight(t) + Mathf.Lerp(start.y, end.y, t)), mid.z);
+
+            float GetWidth(float x)
+                => -4 * width * x * x + 4 * width * x;
+
+            float GetHeight(float y)
+                => -4 * height * y * y + 4 * height * y;
+        }
+
         public static Vector3 GetMeleePosition(int pitch)
             => pitch switch
             {

@@ -36,13 +36,13 @@ namespace TargetPreview.Models
         /// <summary>
         /// Target animation length in ms
         /// </summary>
-        public float flyInTime = 500f;
+        public float targetFlyInTime = 500f;
         /// <summary>
         /// The distance between a target's base and end position in the animation
         /// </summary>
-        public float flyInDistance = 4f;
+        public float targetFlyInDistance = 4f;
         /// <summary>
-        /// The influence of <see cref="flyInDistance"/> on vertical position in the fly-in animation.
+        /// The influence of <see cref="targetFlyInDistance"/> on vertical position in the fly-in animation.
         /// </summary>
         public float verticalInfluence = 0.2f;
         /// <summary>
@@ -50,6 +50,34 @@ namespace TargetPreview.Models
         /// </summary>
         /// <remarks>This is captured during <see cref="Awake"/></remarks>
         public Vector3 approachRingStartSize;
+
+        #region Melee
+        [Space, Header("Melee")]
+        /// <summary>
+        /// <see cref="targetFlyInDistance"/>
+        /// </summary>
+        public float meleeFlyInDistance = 8f;
+        /// <summary>
+        /// Melee animation length in ms
+        /// </summary>
+        public float meleeFlyInTime = 1000f;
+        /// <summary>
+        /// The influence of <see cref="targetFlyInDistance"/> on horizontal position in the fly-in animation for melees.
+        /// </summary>
+        public float horizontalInfluence = .4f;
+        /// <summary>
+        /// The influence of <see cref="targetFlyInDistance"/> on vertical position in the fly-in animation for melees.
+        /// </summary>
+        public float verticalMeleeInfluence = .4f;
+        /// <summary>
+        /// Positional offset for melees.
+        /// </summary>
+        public float horizontalMeleeSpawnOffset = 3f;
+        /// <summary>
+        /// Speed at which melees rotate.
+        /// </summary>
+        public float meleeSpinSpeed = 500f;
+        #endregion
 
         Color currentHandColor;
 
@@ -60,6 +88,14 @@ namespace TargetPreview.Models
         /// <remarks>Setting this to a new value will update all the visuals.</remarks>
         public TargetData TargetData { get => targetData; set { targetData = value; UpdateVisuals(value); } }
 
+        private int meleeDirection;
+        private float flyInTime => targetData.behavior == TargetBehavior.Melee ?
+            VisualConfig.Instance.meleeSpeedMultiplier * meleeFlyInTime :
+            VisualConfig.Instance.targetSpeedMultiplier * targetFlyInTime;
+
+        private float flyInDistance => targetData.behavior == TargetBehavior.Melee ?
+            meleeFlyInDistance : targetFlyInDistance;
+
         /// <summary>
         /// Update target's appearance based on targetData.
         /// </summary>
@@ -69,6 +105,14 @@ namespace TargetPreview.Models
             meshFilter.mesh = AssetContainer.GetMeshForBehavior(newData.behavior);
             currentHandColor = VisualConfig.GetColorForHandType(newData.handType);
             meshRenderer.material.mainTexture = AssetContainer.GetTextureForBehavior(newData.behavior);
+
+            if (newData.behavior == TargetBehavior.Melee)
+            {
+                meshRenderer.material.SetFloat("_Metallic", 0f);
+                meshRenderer.material.SetFloat("_Smoothness", 1f);
+                meleeDirection = newData.transformData.position.x > 0 ? 1 : -1;
+            }
+
             transform.localPosition = newData.transformData.position;
             transform.localRotation = newData.transformData.rotation;
             
@@ -137,6 +181,9 @@ namespace TargetPreview.Models
             float distance = (Mathf.Clamp(timeDifference, 0f, flyInTime) / flyInTime);
             
             AnimateFlyIn(distance);
+
+            if (targetData.behavior == TargetBehavior.Melee)
+                physicalTarget.Rotate(Vector3.forward * (meleeSpinSpeed * Time.deltaTime * meleeDirection));
             
             //Fade in physical target
             meshRenderer.material.color = Color.Lerp(currentHandColor, Color.black, distance * distance);
@@ -155,15 +202,17 @@ namespace TargetPreview.Models
         /// <param name="distance">A 0-1 lerp used to drive the animation time.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void AnimateFlyIn(float distance) =>
-            physicalTarget.transform.localPosition = TargetTransform.Parabola(Vector3.zero, GetFlyInPosition(), flyInDistance * verticalInfluence, distance);
+            physicalTarget.transform.localPosition =
+            targetData.behavior == TargetBehavior.Melee ? TargetTransform.MeleeParabola(Vector3.zero, GetFlyInPosition(), flyInDistance * verticalMeleeInfluence, flyInDistance * horizontalInfluence, distance, meleeDirection) :
+            TargetTransform.Parabola(Vector3.zero, GetFlyInPosition(), flyInDistance * verticalInfluence, distance);
 
         Vector3 GetFlyInPosition()
         {
             float direction = targetData.handType == TargetHandType.Left ? -1f : 1f;
-            return targetData.behavior == TargetBehavior.Melee ? transform.position + transform.forward * 5f : //If its a melee just move it forward.
-                                          new Vector3(flyInDistance * direction, flyInDistance * verticalInfluence, flyInDistance * verticalInfluence); //Else use vertical influence.
-        }
-            
+            return targetData.behavior == TargetBehavior.Melee ? 
+                new Vector3(transform.position.x + -(horizontalMeleeSpawnOffset * meleeDirection), transform.position.y, meleeFlyInDistance) : //If its a melee just move it forward.
+                new Vector3(flyInDistance * direction, flyInDistance * verticalInfluence, flyInDistance * verticalInfluence); //Else use vertical influence.
+        }            
     }
 
     [System.Serializable]

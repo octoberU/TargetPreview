@@ -8,16 +8,19 @@ namespace TargetPreview.ScriptableObjects
         [Header("Colors")]
         public Color leftHandColor;
         public Color rightHandColor;
-        
+        public Color noHandColor = Color.grey;
         [Header("Rendering")]
         public float targetBloomAmount = 2.416924f;
+        [Header("Settings")]
+        public float targetSpeedMultiplier = 1f;
+        public float meleeSpeedMultiplier = 1f;
 
         public static Color GetColorForHandType(TargetHandType handType) =>
             handType switch
             {
                 TargetHandType.Left => Instance.leftHandColor,
                 TargetHandType.Right => Instance.rightHandColor,
-                _ => Color.white,
+                _ => Instance.noHandColor,
             };
 
         public static Color GetTelegraphColorForHandType(TargetHandType handType)

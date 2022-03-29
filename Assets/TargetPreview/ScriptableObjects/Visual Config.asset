@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9be3e4b10a87584887900deabb0d604, type: 3}
   m_Name: Visual Config
   m_EditorClassIdentifier: 
-  leftHandColor: {r: 0, g: 0.43137255, b: 0.7490196, a: 1}
-  rightHandColor: {r: 0.7490196, g: 0.25882354, b: 0, a: 1}
+  leftHandColor: {r: 1, g: 0.45, b: 0.45, a: 1}
+  rightHandColor: {r: 0.45, g: 0.8232123, b: 1, a: 1}
+  noHandColor: {r: 1, g: 1, b: 1, a: 1}
   targetBloomAmount: 2.416924
+  targetSpeedMultiplier: 1
+  meleeSpeedMultiplier: 1
