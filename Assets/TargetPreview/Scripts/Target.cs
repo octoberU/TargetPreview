@@ -75,6 +75,9 @@ namespace TargetPreview.Models
             //Reset transforms
             telegraph.transform.localRotation = Quaternion.Euler(new Vector3(-90, 0, 0));
             physicalTarget.transform.localRotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+            
+            physicalTarget.transform.localScale =
+                newData.behavior == TargetBehavior.Melee ? Vector3.one : Vector3.one * 20f; //Bootleg, melees are normal scale while others are 20x. Fix this later
             approachRing.transform.localRotation = Quaternion.identity;
 
             UpdateTelegraphVisuals(newData);
@@ -151,12 +154,16 @@ namespace TargetPreview.Models
         /// </summary>
         /// <param name="distance">A 0-1 lerp used to drive the animation time.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void AnimateFlyIn(float distance)
+        private void AnimateFlyIn(float distance) =>
+            physicalTarget.transform.localPosition = TargetTransform.Parabola(Vector3.zero, GetFlyInPosition(), flyInDistance * verticalInfluence, distance);
+
+        Vector3 GetFlyInPosition()
         {
             float direction = targetData.handType == TargetHandType.Left ? -1f : 1f;
-            Vector3 endPos = new Vector3(flyInDistance * direction, flyInDistance * verticalInfluence, flyInDistance * verticalInfluence);
-            physicalTarget.transform.localPosition = TargetTransform.Parabola(Vector3.zero, endPos, flyInDistance * verticalInfluence, distance);
+            return targetData.behavior == TargetBehavior.Melee ? transform.position + transform.forward * 5f : //If its a melee just move it forward.
+                                          new Vector3(flyInDistance * direction, flyInDistance * verticalInfluence, flyInDistance * verticalInfluence); //Else use vertical influence.
         }
+            
     }
 
     [System.Serializable]

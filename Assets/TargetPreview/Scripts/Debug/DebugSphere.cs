@@ -48,12 +48,17 @@ namespace Assets.TargetPreview.Scripts.Debug
 
             for (int i = 0; i < (pitchCount - 1); i++)
             {
+                var targetBehavior = (TargetBehavior)Random.Range(0, 5);
+                if (i >= TargetTransform.meleePitchBottomLeft)
+                    targetBehavior = TargetBehavior.Melee;
+                
                 TargetPosition targetPos = TargetTransform.CalculateTargetTransform(i,
                     (Random.Range(-randomOffset.x,randomOffset.x) + offset.x,
                      Random.Range(-randomOffset.y,randomOffset.y) + offset.y, 
                      Random.Range(-randomOffset.x,randomOffset.z) + offset.z));
-                
-                TargetData targetData = new TargetData((TargetBehavior)Random.Range(0, 5), (TargetHandType)Random.Range(1,3), i * timeOffsetPerTarget, targetPos);
+
+               
+                TargetData targetData = new TargetData(targetBehavior, (TargetHandType)Random.Range(1,3), i * timeOffsetPerTarget, targetPos);
                 Target newTarget = targetPool.Take(targetData);
                 sphereTargets.Add(newTarget);
             }

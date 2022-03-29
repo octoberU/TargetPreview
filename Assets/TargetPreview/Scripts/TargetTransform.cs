@@ -5,22 +5,34 @@ namespace TargetPreview.Math
 {
     public static class TargetTransform
     {
-        const int
+        public const int
             numRows = 7,
-            numCols = 12;
+            numCols = 12,
+            meleePitchBottomLeft = 98,
+            meleePitchBottomRight = 99,
+            meleePitchTopLeft = 100,
+            meleePitchTopRight = 101;
 
-        const float
+        public const float
             degreesBetweenX = 17f,
             degreesBetweenY = 11f,
             distance = 15f,
             sphereOffsetY = -1.5f,
-            sphereOffsetZ = 6f;
+            sphereOffsetZ = 6f,
+            meleeHeight = 1.82f,
+            meleeHorizontalOffset = 0.35f,
+            meleeVerticalOffset = 0.871f,
+            meleeDepthOffset = 0.75f,
+            meleeHeightDifference = 0.5f;
+            
         
         
         public static TargetPosition CalculateTargetTransform(int pitch, (float x, float y, float z) offset)
         {
+            if(pitch >= meleePitchBottomLeft && pitch <= meleePitchTopRight)
+                return new TargetPosition(Quaternion.identity, GetMeleePosition(pitch).Add(offset));
+
             float column, row, zOffset;
-            
             //Convert pitches to column and row.
             column = (pitch - ((pitch / numCols) * numCols));
             row = pitch/numCols;
@@ -47,12 +59,26 @@ namespace TargetPreview.Math
         }
         public static Vector3 Parabola(Vector3 start, Vector3 end, float height, float t)
         {
-            System.Func<float, float> f = x => -4 * height * x * x + 4 * height * x;
-
             var mid = Vector3.Lerp(start, end, t);
 
-            return new Vector3(mid.x, f(t) + Mathf.Lerp(start.y, end.y, t), mid.z);
+            return new Vector3(mid.x, GetHeight(t) + Mathf.Lerp(start.y, end.y, t), mid.z);
+            
+            float GetHeight(float x)
+                => -4 * height * x * x + 4 * height * x;
         }
+
+        public static Vector3 GetMeleePosition(int pitch)
+            => pitch switch
+            {
+                meleePitchBottomLeft => new Vector3(-meleeHorizontalOffset, meleeVerticalOffset - meleeHeightDifference, meleeDepthOffset),
+                meleePitchBottomRight => new Vector3(meleeHorizontalOffset, meleeVerticalOffset - meleeHeightDifference, meleeDepthOffset),
+                meleePitchTopLeft => new Vector3(-meleeHorizontalOffset, meleeVerticalOffset, meleeDepthOffset),
+                meleePitchTopRight => new Vector3(meleeHorizontalOffset, meleeVerticalOffset, meleeDepthOffset),
+                _ => throw new System.Exception("Invalid pitch")
+            };
+        
+        public static Vector3 Add(this Vector3 input, (float x, float y, float z) offset) =>
+            new(input.x + offset.x, input.y + offset.y, input.z + offset.z);
     }
 
 }
