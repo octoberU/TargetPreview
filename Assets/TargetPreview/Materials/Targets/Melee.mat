@@ -7,9 +7,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Ring
+  m_Name: Melee
   m_Shader: {fileID: 4800000, guid: fe2b4b4e26214ba893cec8b351365bc0, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: _RENDER_REFLECTIVE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -103,7 +103,7 @@ Material:
     - _Parallax: 0.02
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _RenderReflective: 0
+    - _RenderReflective: 1
     - _Roughness: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0

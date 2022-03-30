@@ -128,6 +128,11 @@ namespace TargetPreview.Models
             trailRenderer.startColor = currentHandColor;
             approachRing.material.color = VisualConfig.GetTelegraphColorForHandType(newData.handType);
             approachRingFilter.mesh = AssetContainer.GetApproachRingForBehavior(newData.behavior);
+
+            meshRenderer.material = newData.behavior == TargetBehavior.Melee
+                ? VisualConfig.Instance.meleeTargetMaterial
+                : VisualConfig.Instance.standardTargetMaterial;
+               
             
             //Fix orientation for angled targets
             if(newData.behavior == TargetBehavior.Vertical)
@@ -183,7 +188,7 @@ namespace TargetPreview.Models
             AnimateFlyIn(distance);
 
             if (targetData.behavior == TargetBehavior.Melee)
-                physicalTarget.Rotate(Vector3.forward * (meleeSpinSpeed * Time.deltaTime * meleeDirection));
+                physicalTarget.localRotation = Quaternion.Euler(Vector3.up * (meleeSpinSpeed * time * meleeDirection) + Vector3.right * 90 * VisualConfig.Instance.meleeRotationSpeed);
             
             //Fade in physical target
             meshRenderer.material.color = Color.Lerp(currentHandColor, Color.black, distance * distance);

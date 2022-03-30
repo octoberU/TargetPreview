@@ -222,7 +222,7 @@ MonoBehaviour:
   meleeFlyInTime: 750
   horizontalInfluence: 0.4
   verticalMeleeInfluence: 0.3
-  horizontalMeleeSpawnOffset: 3
+  horizontalMeleeSpawnOffset: 0
   meleeSpinSpeed: 300
 --- !u!1 &8929536694056186172
 GameObject:

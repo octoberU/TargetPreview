@@ -11,9 +11,13 @@ namespace TargetPreview.ScriptableObjects
         public Color noHandColor = Color.grey;
         [Header("Rendering")]
         public float targetBloomAmount = 2.416924f;
+        public Material meleeTargetMaterial;
+        public Material standardTargetMaterial;
         [Header("Settings")]
         public float targetSpeedMultiplier = 1f;
         public float meleeSpeedMultiplier = 1f;
+        public float meleeRotationSpeed = 0.1f;
+        
 
         public static Color GetColorForHandType(TargetHandType handType) =>
             handType switch
