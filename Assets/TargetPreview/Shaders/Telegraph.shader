@@ -4,20 +4,20 @@ Shader "TargetPreview/Telegraph"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
-        _MaskTex ("Mask Texture", 2D) = "white" {}
-        [HDR]_Color ("Main Color", Color) = (1,1,1,1)
-        _Strength("Twirl", Float) = 1.0
-        _Spherize("Spherize", Float) = 1.0
-        _Scale("Scale", Float) = 1.0
-        _Rotate("Rotate", Float) = 1.0
-        _SpinSpeed("Spin Speed", Float) = 1.0
-        _MaskScale("Mask Scale", Float) = 1.0
+        [PerRendererData] _MainTex ("Texture", 2D) = "white" {}
+        [PerRendererData] _MaskTex ("Mask Texture", 2D) = "white" {}
+        [PerRendererData] [HDR]_Color ("Main Color", Color) = (1,1,1,1)
+        [PerRendererData] _Strength("Twirl", Float) = 1.0
+        [PerRendererData] _Spherize("Spherize", Float) = 1.0
+        [PerRendererData] _Scale("Scale", Float) = 1.0
+        [PerRendererData] _Rotate("Rotate", Float) = 1.0
+        [PerRendererData] _SpinSpeed("Spin Speed", Float) = 1.0
+        [PerRendererData] _MaskScale("Mask Scale", Float) = 1.0
         
         //Fading in and out
-        _FadeInDuration("Fade out duration", Float) = 100.0
-        _FadeOutDuration("Fade in duration", Float) = 100.0
-        _TargetTime("Current target time (Set in c#)", Float) = 0
+        [PerRendererData] _FadeInDuration("Fade out duration", Float) = 100.0
+        [PerRendererData] _FadeOutDuration("Fade in duration", Float) = 100.0
+        [PerRendererData] _TargetTime("Current target time (Set in c#)", Float) = 0
     }
     SubShader
     {

@@ -8,28 +8,16 @@ namespace TargetPreview.Models
     public class Target : MonoBehaviour
     {
         #region References
-        /// <summary>
-        /// A reference to the physical target that needs a fly-in animation.
-        /// </summary>
-        Transform physicalTarget;
-        MeshRenderer approachRing;
-        MeshFilter approachRingFilter;
-        TrailRenderer trailRenderer;
-        MeshRenderer telegraph;
-        MeshFilter meshFilter;
-        MeshRenderer meshRenderer;
-        public virtual void Awake()
-        {
-            physicalTarget = transform.Find("PhysicalTarget");
-            meshFilter = physicalTarget.GetComponent<MeshFilter>();
-            meshRenderer = physicalTarget.GetComponent<MeshRenderer>();
-            telegraph = transform.Find("Telegraph").GetComponent<MeshRenderer>();
-            trailRenderer = physicalTarget.GetComponent<TrailRenderer>();
-            approachRing = transform.Find("Ring").GetComponent<MeshRenderer>();
-            approachRingFilter = approachRing.GetComponent<MeshFilter>();
+        [SerializeField] Transform physicalTarget;
+        [SerializeField] MeshRenderer approachRing;
+        [SerializeField] MeshFilter approachRingFilter;
+        [SerializeField] TrailRenderer trailRenderer;
+        [SerializeField] MeshRenderer telegraph;
+        [SerializeField] MeshFilter meshFilter;
+        [SerializeField] MeshRenderer meshRenderer;
+        public virtual void Awake() =>
             approachRingStartSize = approachRing.transform.localScale;
-            TargetData = new TargetData(placeHolder: true); //DEBUG
-        }
+
         #endregion
 
         public uint time;
@@ -154,23 +142,19 @@ namespace TargetPreview.Models
             if (telegraphPreset != null)
             {
                 telegraph.gameObject.SetActive(true);
-                telegraph.material.mainTexture = telegraphPreset.cloudTexture;
-                telegraph.material.SetTexture("_MaskTex", telegraphPreset.maskTexture);
-                telegraph.material.color = VisualConfig.GetTelegraphColorForHandType(newData.handType);
-                telegraph.material.SetFloat("_Strength", telegraphPreset.twirlAmount);
-                telegraph.material.SetFloat("_Scale", telegraphPreset.cloudSize);
-                telegraph.material.SetFloat("_Spherize", telegraphPreset.spherizeAmount);
-                telegraph.material.SetFloat("_SpinSpeed", telegraphPreset.spinSpeed);
-                telegraph.material.SetFloat("_MaskScale", telegraphPreset.maskSize);
-                telegraph.material.SetFloat("_TargetTime", newData.time);
-                telegraph.material.SetFloat("_FadeInDuration", flyInTime);
-                telegraph.material.SetFloat("_FadeOutDuration", flyInTime / 4f);
+                var propertyBlock = telegraphPreset.GetMaterialPropertyBlock();
+                propertyBlock.SetColor("_Color", currentHandColor);
+                propertyBlock.SetFloat("_TargetTime", newData.time);
+                propertyBlock.SetFloat("_FadeInDuration", flyInTime);
+                propertyBlock.SetFloat("_FadeOutDuration", flyInTime / 4f);
+                telegraph.SetPropertyBlock(propertyBlock);
             }
             else
             {
                 telegraph.gameObject.SetActive(false);
             }
         }
+        
 
         public void Update() =>
             AnimatePhysicalTarget(TargetManager.Time);

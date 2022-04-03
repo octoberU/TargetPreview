@@ -213,6 +213,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c61c0ad7cb168149a1846e823c10e50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  physicalTarget: {fileID: 3909424181280735337}
+  approachRing: {fileID: 727214769697544474}
+  approachRingFilter: {fileID: 1425938341145035402}
+  trailRenderer: {fileID: 57394313}
+  telegraph: {fileID: 5638066878870975424}
+  meshFilter: {fileID: 6623779517340223289}
+  meshRenderer: {fileID: 2399960413605709830}
   time: 0
   targetFlyInTime: 500
   targetFlyInDistance: 4

@@ -17,6 +17,19 @@ namespace TargetPreview.ScriptableObjects
         [Header("Mask")]
         public Texture2D maskTexture;
         public float maskSize = 1.19f;
+
+        public MaterialPropertyBlock GetMaterialPropertyBlock()
+        {
+            MaterialPropertyBlock block = new MaterialPropertyBlock();
+            block.SetTexture("_MainTex", cloudTexture);
+            block.SetFloat("_CloudSize", cloudSize);
+            block.SetFloat("_TwirlAmount", twirlAmount);
+            block.SetFloat("_SpinSpeed", spinSpeed);
+            block.SetFloat("_SpherizeAmount", spherizeAmount);
+            block.SetTexture("_MaskTex", maskTexture);
+            block.SetFloat("_MaskSize", maskSize);
+            return block;
+        }
     }
 
 }
