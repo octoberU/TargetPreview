@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using TargetPreview.Models;
 using TargetPreview.ScriptableObjects;
 using UnityEngine;
@@ -10,25 +12,34 @@ namespace TargetPreview.Display
         [SerializeField] AssetContainer assetContainer;
         [SerializeField] VisualConfig visualConfig;
         [SerializeField] Target targetPrefab;
+        [SerializeField] TargetDictionary targetPrefabs;
+        
+        [Serializable]
+        public class TargetDictionary : SerializableDictionary<TargetBehavior, Target> {}
 
-        const int poolSize = 200;
-        Stack<Target> targetPool = new Stack<Target>();
+        Dictionary<TargetBehavior, Stack<Target>> targets = 
+            Enum.GetValues(typeof(TargetBehavior))
+            .Cast<TargetBehavior>()
+            .ToDictionary(x => x, x => new Stack<Target>());
+        
+        const int poolSize = 100;
 
         void Awake() => 
             FillPool(poolSize);
         
         void FillPool(int size)
         {
-            for (int i = 0; i < size; i++)
-                CreateTarget();
+            foreach (var behavior in Enum.GetValues(typeof(TargetBehavior)).Cast<TargetBehavior>())
+                for (int i = 0; i < size; i++)
+                    CreateTarget(behavior);
         }
-
-        void CreateTarget()
+        
+        void CreateTarget(TargetBehavior behaviour)
         {
-            Target allocatedTarget = Instantiate(targetPrefab, transform);
+            Target allocatedTarget = Instantiate(targetPrefabs[behaviour], transform);
             allocatedTarget.TargetData = new TargetData(placeHolder: true);
             allocatedTarget.gameObject.SetActive(false);
-            targetPool.Push(allocatedTarget);
+            targets[behaviour].Push(allocatedTarget);
         }
 
         /// <summary>
@@ -38,12 +49,13 @@ namespace TargetPreview.Display
         /// <returns>A reference to the target</returns>
         public Target Take(TargetData data)
         {
-            if(targetPool.Count == 0)
+            var targetBehavior = data.behavior;
+            if(targets[targetBehavior].Count == 0)
             {
-                CreateTarget();
+                CreateTarget(targetBehavior);
             }
 
-            Target storedTarget = targetPool.Pop();
+            Target storedTarget = targets[targetBehavior].Pop();
             storedTarget
                 .TargetData = data;
             storedTarget
@@ -59,7 +71,7 @@ namespace TargetPreview.Display
         {
             target.gameObject.SetActive(false);
             target.transform.SetParent(transform);
-            targetPool.Push(target);
+            targets[target.TargetData.behavior].Push(target);
         }
     }
 
