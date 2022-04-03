@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TargetPreview.Models;
 using TargetPreview.ScriptableObjects;
 using UnityEngine;
@@ -11,9 +12,8 @@ namespace TargetPreview.Display
     {
         [SerializeField] AssetContainer assetContainer;
         [SerializeField] VisualConfig visualConfig;
-        [SerializeField] Target targetPrefab;
         [SerializeField] TargetDictionary targetPrefabs;
-        
+
         [Serializable]
         public class TargetDictionary : SerializableDictionary<TargetBehavior, Target> {}
 
@@ -27,13 +27,17 @@ namespace TargetPreview.Display
         void Awake() => 
             FillPool(poolSize);
         
-        void FillPool(int size)
+        public void FillPool(int size)
         {
             foreach (var behavior in Enum.GetValues(typeof(TargetBehavior)).Cast<TargetBehavior>())
                 for (int i = 0; i < size; i++)
                     CreateTarget(behavior);
         }
-        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="behaviour"></param>
         void CreateTarget(TargetBehavior behaviour)
         {
             Target allocatedTarget = Instantiate(targetPrefabs[behaviour], transform);
@@ -41,11 +45,8 @@ namespace TargetPreview.Display
             allocatedTarget.gameObject.SetActive(false);
             targets[behaviour].Push(allocatedTarget);
         }
-
-        /// <summary>
-        /// Takes a target from the <see cref="TargetPool"/>.
-        /// </summary>
-        /// <param name="data"></param>
+        
+        /// <summary>Takes a target from the <see cref="TargetPool"/>. </summary>
         /// <returns>A reference to the target</returns>
         public Target Take(TargetData data)
         {
@@ -56,14 +57,12 @@ namespace TargetPreview.Display
             }
 
             Target storedTarget = targets[targetBehavior].Pop();
-            storedTarget
-                .TargetData = data;
-            storedTarget
-                .transform.SetParent(null);
-            storedTarget
-                .Update();                  // Unparented objects perform better,
-            storedTarget                    // but it might be unnecessary.
-                .gameObject.SetActive(true);
+            
+            storedTarget.TargetData = data;
+            storedTarget.transform.SetParent(null);
+            storedTarget.Update();
+            storedTarget.gameObject.SetActive(true);
+            
             return storedTarget;
         }
 
