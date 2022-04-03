@@ -220,42 +220,7 @@ namespace TargetPreview.Models
         }            
     }
 
-    [System.Serializable]
-    public struct TargetData
+    class MeleeTarget : Target
     {
-        public TargetBehavior behavior;
-        public TargetHandType handType;
-        public float time;
-        public TargetPosition transformData;
-
-        public TargetData(TargetBehavior behavior, TargetHandType color, float time, TargetPosition transformData)
-        {
-            this.behavior = behavior;
-            this.handType = color;
-            this.time = time;
-            this.transformData = transformData;
-        }
-        /// <summary>
-        /// A constructor for creating placeholder targetData.
-        /// </summary>
-        /// <param name="placeHolder"></param>
-        public TargetData(bool placeHolder)
-        {
-            this.behavior = TargetBehavior.Standard;
-            this.handType = TargetHandType.Left;
-            this.time = 500;
-            this.transformData = new TargetPosition(new Quaternion(), new Vector3());
-        }
-    }
-
-    public struct TargetPosition
-    {
-        public Quaternion rotation;
-        public Vector3 position;
-        public TargetPosition(Quaternion rotation, Vector3 position)
-        {
-            this.rotation = rotation;
-            this.position = position;
-        }
     }
 }
