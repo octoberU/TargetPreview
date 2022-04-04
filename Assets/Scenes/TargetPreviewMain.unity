@@ -140,7 +140,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8829908950917758965, guid: 3b90e47860a9a3148a54d9e09a0585c5, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8829908950917758965, guid: 3b90e47860a9a3148a54d9e09a0585c5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -535,9 +535,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: DebugSphere
       objectReference: {fileID: 0}
+    - target: {fileID: 4946275887064091268, guid: 91ca3e10da89a5d48afa44ad5e3e7080, type: 3}
+      propertyPath: debugTime
+      value: 172
+      objectReference: {fileID: 0}
+    - target: {fileID: 4946275887064091268, guid: 91ca3e10da89a5d48afa44ad5e3e7080, type: 3}
+      propertyPath: timeOffsetPerTarget
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 4946275887064091269, guid: 91ca3e10da89a5d48afa44ad5e3e7080, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4946275887064091269, guid: 91ca3e10da89a5d48afa44ad5e3e7080, type: 3}
       propertyPath: m_LocalPosition.x

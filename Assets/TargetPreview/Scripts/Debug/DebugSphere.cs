@@ -48,7 +48,7 @@ namespace Assets.TargetPreview.Scripts.Debug
 
             for (int i = 0; i < (pitchCount - 1); i++)
             {
-                var targetBehavior = (TargetBehavior)Random.Range(0, 5);
+                var targetBehavior = (TargetBehavior)Random.Range(0,5);
                 var targetHandType = (TargetHandType)Random.Range(1,3);
                 if (i >= TargetTransform.meleePitchBottomLeft)
                 {

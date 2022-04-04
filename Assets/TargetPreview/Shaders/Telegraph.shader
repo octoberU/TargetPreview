@@ -4,8 +4,7 @@ Shader "TargetPreview/Telegraph"
 {
     Properties
     {
-        [PerRendererData] _MainTex ("Texture", 2D) = "white" {}
-        [PerRendererData] _MaskTex ("Mask Texture", 2D) = "white" {}
+        _MainTex ("Texture", 2D) = "white" {}
         [PerRendererData] [HDR]_Color ("Main Color", Color) = (1,1,1,1)
         [PerRendererData] _Strength("Twirl", Float) = 1.0
         [PerRendererData] _Spherize("Spherize", Float) = 1.0
@@ -18,6 +17,9 @@ Shader "TargetPreview/Telegraph"
         [PerRendererData] _FadeInDuration("Fade out duration", Float) = 100.0
         [PerRendererData] _FadeOutDuration("Fade in duration", Float) = 100.0
         [PerRendererData] _TargetTime("Current target time (Set in c#)", Float) = 0
+        
+        [PerRendererData] _TargetTextures ("Texture", 2DArray) = "" {}
+        [PerRendererData] _TextureIndex ("Texture Index", Range(0, 7)) = 0
     }
     SubShader
     {
@@ -31,8 +33,10 @@ Shader "TargetPreview/Telegraph"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma multi_compile_fog
-
+            #pragma multi_compile_instancing
+            #pragma require 2darray
+            #pragma target 3.5
+            
             #include "UnityCG.cginc"
 
             struct appdata
@@ -40,6 +44,7 @@ Shader "TargetPreview/Telegraph"
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
                 float2 uv2 : TEXCOORD1;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
@@ -48,24 +53,29 @@ Shader "TargetPreview/Telegraph"
                 UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
                 float2 uv2 : TEXCOORD1;
+                UNITY_VERTEX_INPUT_INSTANCE_ID 
             };
 
             sampler2D _MainTex;
-            sampler2D _MaskTex;
             float4 _MainTex_ST;
-            float4 _MaskTex_ST;
-            fixed4 _Color;
-            fixed _Strength;
-            fixed _Scale;
-            fixed _Spherize;
-            fixed _Rotate;
-            fixed _SpinSpeed;
-            fixed _MaskScale;
             fixed _GlobalTime;
-            fixed _FadeOutDuration;
-            fixed _FadeInDuration;
-            fixed _TargetTime;
 
+            UNITY_DECLARE_TEX2DARRAY(_TargetTextures);
+
+            UNITY_INSTANCING_BUFFER_START(Props)
+                fixed4 _Color;
+                fixed _Strength;
+                fixed _Scale;
+                fixed _Spherize;
+                fixed _Rotate;
+                fixed _SpinSpeed;
+                fixed _MaskScale;
+                
+                fixed _FadeOutDuration;
+                fixed _FadeInDuration;
+                fixed _TargetTime;
+                fixed _TextureIndex;
+            UNITY_INSTANCING_BUFFER_END(Props)
             
             fixed2 Twirl(fixed2 UV, fixed2 Center, fixed Strength, fixed2 Offset)
             {
@@ -112,38 +122,46 @@ Shader "TargetPreview/Telegraph"
             v2f vert (appdata v)
             {
                 v2f o;
+                UNITY_SETUP_INSTANCE_ID(v);
+                UNITY_TRANSFER_INSTANCE_ID(v, o);
                 //fixed fadeOut = clamp(((_GlobalTime - _TargetTime ) / _FadeOutDuration), 0, 1);
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                o.uv2 = Scale(_MaskScale, TRANSFORM_TEX(v.uv2, _MaskTex));
-                o.uv = Rotate(o.uv, fixed2(0.5,0.5), _Rotate + (_Time.y * _SpinSpeed));
-                o.uv = Scale(_Scale, o.uv);
-                o.uv = Twirl(o.uv, fixed2(0.5,0.5), _Strength, fixed2(0,0));
+                o.uv2 = Scale(UNITY_ACCESS_INSTANCED_PROP(Props, _MaskScale), v.uv2);
+                o.uv = Rotate(o.uv, fixed2(0.5,0.5), UNITY_ACCESS_INSTANCED_PROP(Props, _Rotate) + (_Time.y * UNITY_ACCESS_INSTANCED_PROP(Props, _SpinSpeed)));
+                o.uv = Scale(UNITY_ACCESS_INSTANCED_PROP(Props, _Scale), o.uv);
+                o.uv = Twirl(o.uv, fixed2(0.5,0.5), UNITY_ACCESS_INSTANCED_PROP(Props, _Strength), fixed2(0,0));
 
                 //fixed fadeOut = clamp(1 - (((_GlobalTime + _FadeOutDuration) - (_TargetTime) ) / _FadeOutDuration), 0, 1);
                 //o.vertex = UnityObjectToClipPos(v.vertex * fadeOut);
 
 
-                o.uv = Spherize(o.uv, fixed2(0.5, 0.5), _Spherize, fixed2(0,0));
+                o.uv = Spherize(o.uv, fixed2(0.5, 0.5), UNITY_ACCESS_INSTANCED_PROP(Props, _Spherize), fixed2(0,0));
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                
+                UNITY_SETUP_INSTANCE_ID(i);
+                fixed3 projectedCoordinates = fixed3(i.uv2, UNITY_ACCESS_INSTANCED_PROP(Props, _TextureIndex));
+                fixed4 maskTexture = UNITY_SAMPLE_TEX2DARRAY(_TargetTextures, projectedCoordinates);
 
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);
                 //apply telegraph mask
-                fixed4 mask = tex2D(_MaskTex, i.uv2) * col;
+                fixed4 mask = maskTexture * col;
                 // tint the color
-                fixed4 tint = mask * _Color;
-                // apply fog
-                UNITY_APPLY_FOG(i.fogCoord, col);
+                fixed4 tint = mask * UNITY_ACCESS_INSTANCED_PROP(Props, _Color);
 
-                fixed fadeIn = clamp((1 * (((_GlobalTime + _FadeInDuration) - _TargetTime ) / _FadeInDuration)) + 1, 0, 1); //Fade in the target by duration.
-                fixed fadeOut = clamp(1 - (((_GlobalTime + _FadeOutDuration) - (_TargetTime) ) / _FadeOutDuration), 0, 1);
+                half globalTime = _GlobalTime;
+                half fadeInDuration = UNITY_ACCESS_INSTANCED_PROP(Props, _FadeInDuration);
+                half fadeOutDuration = UNITY_ACCESS_INSTANCED_PROP(Props, _FadeOutDuration);
+                half targetTime = UNITY_ACCESS_INSTANCED_PROP(Props, _TargetTime);
+                
+                fixed fadeIn = clamp((1 * (((globalTime + fadeInDuration) - targetTime ) / fadeInDuration)) + 1, 0, 1); //Fade in the target by duration.
+
+                fixed fadeOut = clamp(1 - (((globalTime + fadeOutDuration) - (targetTime) ) / fadeOutDuration), 0, 1);
                 tint *= fixed4(1, 1, 1, min(fadeIn,fadeOut));
                 return tint;
             }

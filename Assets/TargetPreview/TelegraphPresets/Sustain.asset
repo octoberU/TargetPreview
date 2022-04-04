@@ -19,3 +19,4 @@ MonoBehaviour:
   spherizeAmount: 2.2
   maskTexture: {fileID: 2800000, guid: 3aa9753edf16c2247b6cab0e35f5cb92, type: 3}
   maskSize: 1.4
+  textureArrayIndex: 1

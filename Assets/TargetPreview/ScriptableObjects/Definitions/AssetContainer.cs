@@ -39,6 +39,10 @@ namespace TargetPreview.ScriptableObjects
         public Mesh squareRing;
         public Mesh angleRing;
 
+        
+        [HideInInspector] public Texture2DArray targetTextures;
+        [HideInInspector] public Texture2DArray telegraphTextures;
+
         public static Mesh GetMeshForBehavior(TargetBehavior behavior) =>
             behavior switch
             {
@@ -88,6 +92,46 @@ namespace TargetPreview.ScriptableObjects
             TargetBehavior.ChainStart => Instance.squareRing,
             _ => null,
         };
+        
+        
+        public MaterialPropertyBlock GetPropertyBlockPhysicalTarget(TargetBehavior behavior, Color color)
+        {
+            var block = new MaterialPropertyBlock();
+            block.SetColor("_Color", color);
+            var textureForBehavior = GetTextureForBehavior(behavior);
+            block.SetFloat("_TextureIndex", (float)behavior);
+                
+            return block;
+        }
+
+        public void FillTextureArrays()
+        {
+            var tempTargetTextures = new Texture2DArray(512, 512, 7, TextureFormat.RGBA32, false);
+            
+            tempTargetTextures.SetPixels(Instance.standardTexture.GetPixels(0), 0);
+            tempTargetTextures.SetPixels(Instance.sustainTexture.GetPixels(0), 3);
+            tempTargetTextures.SetPixels(Instance.angleTexture.GetPixels(0), 1);            
+            tempTargetTextures.SetPixels(Instance.angleTexture.GetPixels(0), 2);
+            tempTargetTextures.SetPixels(Instance.chainTexture.GetPixels(0), 5);
+            tempTargetTextures.SetPixels(Instance.chainStartTexture.GetPixels(0), 4);
+            tempTargetTextures.Apply();
+            targetTextures = tempTargetTextures;
+            VisualConfig.Instance.standardTargetMaterial.SetTexture("_TargetTextures", targetTextures);
+            
+            
+            var tempTelegraphTextures = new Texture2DArray(256, 256, 4, TextureFormat.RGBA32, false);
+            tempTelegraphTextures.SetPixels(Instance.standardTelegraph.maskTexture.GetPixels(0), 0);
+            tempTelegraphTextures.SetPixels(Instance.sustainTelegraph.maskTexture.GetPixels(0), 1);
+            tempTelegraphTextures.SetPixels(Instance.angleTelegraph.maskTexture.GetPixels(0), 2);
+            tempTelegraphTextures.Apply();
+            telegraphTextures = tempTelegraphTextures;
+            
+            VisualConfig.Instance.telegraphMaterial.SetTexture("_TargetTextures", telegraphTextures);
+            VisualConfig.Instance.telegraphMaterial.mainTexture = standardTelegraph.cloudTexture;
+    
+
+            Instance.telegraphTextures = new Texture2DArray(512, 512, 3, TextureFormat.RGBA32, false);
+        }
 
     }
 

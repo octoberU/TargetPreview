@@ -24,9 +24,12 @@ namespace TargetPreview.Display
         
         const int poolSize = 100;
 
-        void Awake() => 
+        void Awake()
+        {
+            assetContainer.FillTextureArrays();
             FillPool(poolSize);
-        
+        }
+
         public void FillPool(int size)
         {
             foreach (var behavior in Enum.GetValues(typeof(TargetBehavior)).Cast<TargetBehavior>())

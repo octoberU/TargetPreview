@@ -92,12 +92,14 @@ namespace TargetPreview.Models
         {
             meshFilter.mesh = AssetContainer.GetMeshForBehavior(newData.behavior);
             currentHandColor = VisualConfig.GetColorForHandType(newData.handType);
-            meshRenderer.material.mainTexture = AssetContainer.GetTextureForBehavior(newData.behavior);
+            var propertyBlock = GetPropertyBlock();
+
+            physicalTargetPropertyBlock =
+                AssetContainer.Instance.GetPropertyBlockPhysicalTarget(newData.behavior, currentHandColor);
+            meshRenderer.SetPropertyBlock(physicalTargetPropertyBlock);
 
             if (newData.behavior == TargetBehavior.Melee)
             {
-                meshRenderer.material.SetFloat("_Metallic", 0f);
-                meshRenderer.material.SetFloat("_Smoothness", 1f);
                 meleeDirection = newData.transformData.position.x > 0 ? 1 : -1;
             }
 
@@ -108,13 +110,15 @@ namespace TargetPreview.Models
             telegraph.transform.localRotation = Quaternion.Euler(new Vector3(-90, 0, 0));
             physicalTarget.transform.localRotation = Quaternion.Euler(new Vector3(-90, 0, 0));
             
+            
             physicalTarget.transform.localScale =
                 newData.behavior == TargetBehavior.Melee ? Vector3.one : Vector3.one * 20f; //Bootleg, melees are normal scale while others are 20x. Fix this later
             approachRing.transform.localRotation = Quaternion.identity;
 
             UpdateTelegraphVisuals(newData);
-            trailRenderer.startColor = currentHandColor;
-            approachRing.material.color = VisualConfig.GetTelegraphColorForHandType(newData.handType);
+            //trailRenderer.startColor = currentHandColor;
+            approachRing.SetPropertyBlock(propertyBlock);
+
             approachRingFilter.mesh = AssetContainer.GetApproachRingForBehavior(newData.behavior);
 
             meshRenderer.material = newData.behavior == TargetBehavior.Melee
@@ -159,6 +163,8 @@ namespace TargetPreview.Models
         public void Update() =>
             AnimatePhysicalTarget(TargetManager.Time);
 
+
+        MaterialPropertyBlock physicalTargetPropertyBlock;
         /// <summary>
         /// Animate target based on time.
         /// </summary>
@@ -175,7 +181,8 @@ namespace TargetPreview.Models
                 physicalTarget.localRotation = Quaternion.Euler(Vector3.up * (meleeSpinSpeed * time * meleeDirection) + Vector3.right * 90 * VisualConfig.Instance.meleeRotationSpeed);
             
             //Fade in physical target
-            meshRenderer.material.color = Color.Lerp(currentHandColor, Color.black, distance * distance);
+            physicalTargetPropertyBlock.SetColor("_Color", Color.Lerp(currentHandColor, Color.black, distance * distance));
+            meshRenderer.SetPropertyBlock(physicalTargetPropertyBlock);
 
             if (distance > 0.99f) 
                 approachRing.transform.localScale = Vector3.zero;
@@ -201,10 +208,15 @@ namespace TargetPreview.Models
             return targetData.behavior == TargetBehavior.Melee ? 
                 new Vector3(transform.position.x + -(horizontalMeleeSpawnOffset * meleeDirection), transform.position.y, meleeFlyInDistance) : //If its a melee just move it forward.
                 new Vector3(flyInDistance * direction, flyInDistance * verticalInfluence, flyInDistance * verticalInfluence); //Else use vertical influence.
-        }            
-    }
-
-    class MeleeTarget : Target
-    {
+        }        
+        
+        MaterialPropertyBlock GetPropertyBlock()
+        {
+            var propertyBlock = new MaterialPropertyBlock();
+            propertyBlock.SetColor("_Color", currentHandColor);
+            return new MaterialPropertyBlock();
+        }
+            
+ 
     }
 }

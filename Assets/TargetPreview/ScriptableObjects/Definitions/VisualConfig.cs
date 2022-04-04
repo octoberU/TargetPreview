@@ -13,6 +13,7 @@ namespace TargetPreview.ScriptableObjects
         public float targetBloomAmount = 2.416924f;
         public Material meleeTargetMaterial;
         public Material standardTargetMaterial;
+        public Material telegraphMaterial;
         [Header("Settings")]
         public float targetSpeedMultiplier = 1f;
         public float meleeSpeedMultiplier = 1f;

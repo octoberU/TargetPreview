@@ -18,5 +18,7 @@ MonoBehaviour:
   targetBloomAmount: 1.4
   meleeTargetMaterial: {fileID: 2100000, guid: 07457a1220a4db14bbd744477da2393c, type: 2}
   standardTargetMaterial: {fileID: 2100000, guid: e1166e935d7db91499adbd99ea142267, type: 2}
+  telegraphMaterial: {fileID: 2100000, guid: 28b5d2b5aff8275409d1b2ae2814604d, type: 2}
   targetSpeedMultiplier: 1
   meleeSpeedMultiplier: 1
+  meleeRotationSpeed: 0.1
