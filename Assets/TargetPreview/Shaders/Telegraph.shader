@@ -5,6 +5,7 @@ Shader "TargetPreview/Telegraph"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        _TelegraphBoost("_TelegraphBoost", Float) = 1.9
         [PerRendererData] [HDR]_Color ("Main Color", Color) = (1,1,1,1)
         [PerRendererData] _Strength("Twirl", Float) = 1.0
         [PerRendererData] _Spherize("Spherize", Float) = 1.0
@@ -59,6 +60,7 @@ Shader "TargetPreview/Telegraph"
             sampler2D _MainTex;
             float4 _MainTex_ST;
             fixed _GlobalTime;
+            float _TelegraphBoost;
 
             UNITY_DECLARE_TEX2DARRAY(_TargetTextures);
 
@@ -148,7 +150,7 @@ Shader "TargetPreview/Telegraph"
                 fixed4 maskTexture = UNITY_SAMPLE_TEX2DARRAY(_TargetTextures, projectedCoordinates);
 
                 // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv);
+                fixed4 col = pow(tex2D(_MainTex, i.uv), _TelegraphBoost) * _TelegraphBoost;
                 //apply telegraph mask
                 fixed4 mask = maskTexture * col;
                 // tint the color

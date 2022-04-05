@@ -116,8 +116,10 @@ namespace TargetPreview.Models
             approachRing.transform.localRotation = Quaternion.identity;
 
             UpdateTelegraphVisuals(newData);
-            //trailRenderer.startColor = currentHandColor;
-            approachRing.SetPropertyBlock(propertyBlock);
+            trailRenderer.startColor = currentHandColor;
+            
+            //approachRing.SetPropertyBlock(propertyBlock);
+            approachRing.SetPropertyBlock(physicalTargetPropertyBlock);
 
             approachRingFilter.mesh = AssetContainer.GetApproachRingForBehavior(newData.behavior);
 
