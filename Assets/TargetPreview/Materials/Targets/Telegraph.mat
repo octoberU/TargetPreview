@@ -90,6 +90,7 @@ Material:
     - _SrcBlend: 1
     - _Strength: -6.9
     - _TargetTime: 1
+    - _TelegraphBoost: 1.8
     - _TextureIndex: 0
     - _UVSec: 0
     - _ZWrite: 1

@@ -88,6 +88,7 @@ Material:
     - _AlphaClip: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
+    - _BloomBoost: 1
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
@@ -98,12 +99,13 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _FresnelPower: 2.68
+    - _FresnelPower: 4.09
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _Metallic: 0
     - _Mode: 0
+    - _NoTexture: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _QueueOffset: 0
