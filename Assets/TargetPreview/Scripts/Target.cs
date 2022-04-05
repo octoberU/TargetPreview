@@ -8,28 +8,16 @@ namespace TargetPreview.Models
     public class Target : MonoBehaviour
     {
         #region References
-        /// <summary>
-        /// A reference to the physical target that needs a fly-in animation.
-        /// </summary>
-        Transform physicalTarget;
-        MeshRenderer approachRing;
-        MeshFilter approachRingFilter;
-        TrailRenderer trailRenderer;
-        MeshRenderer telegraph;
-        MeshFilter meshFilter;
-        MeshRenderer meshRenderer;
-        public virtual void Awake()
-        {
-            physicalTarget = transform.Find("PhysicalTarget");
-            meshFilter = physicalTarget.GetComponent<MeshFilter>();
-            meshRenderer = physicalTarget.GetComponent<MeshRenderer>();
-            telegraph = transform.Find("Telegraph").GetComponent<MeshRenderer>();
-            trailRenderer = physicalTarget.GetComponent<TrailRenderer>();
-            approachRing = transform.Find("Ring").GetComponent<MeshRenderer>();
-            approachRingFilter = approachRing.GetComponent<MeshFilter>();
+        [SerializeField] Transform physicalTarget;
+        [SerializeField] MeshRenderer approachRing;
+        [SerializeField] MeshFilter approachRingFilter;
+        [SerializeField] TrailRenderer trailRenderer;
+        [SerializeField] MeshRenderer telegraph;
+        [SerializeField] MeshFilter meshFilter;
+        [SerializeField] MeshRenderer meshRenderer;
+        public virtual void Awake() =>
             approachRingStartSize = approachRing.transform.localScale;
-            TargetData = new TargetData(placeHolder: true); //DEBUG
-        }
+
         #endregion
 
         public uint time;
@@ -104,12 +92,14 @@ namespace TargetPreview.Models
         {
             meshFilter.mesh = AssetContainer.GetMeshForBehavior(newData.behavior);
             currentHandColor = VisualConfig.GetColorForHandType(newData.handType);
-            meshRenderer.material.mainTexture = AssetContainer.GetTextureForBehavior(newData.behavior);
+            var propertyBlock = GetPropertyBlock();
+
+            physicalTargetPropertyBlock =
+                AssetContainer.Instance.GetPropertyBlockPhysicalTarget(newData.behavior, currentHandColor);
+            meshRenderer.SetPropertyBlock(physicalTargetPropertyBlock);
 
             if (newData.behavior == TargetBehavior.Melee)
             {
-                meshRenderer.material.SetFloat("_Metallic", 0f);
-                meshRenderer.material.SetFloat("_Smoothness", 1f);
                 meleeDirection = newData.transformData.position.x > 0 ? 1 : -1;
             }
 
@@ -120,13 +110,17 @@ namespace TargetPreview.Models
             telegraph.transform.localRotation = Quaternion.Euler(new Vector3(-90, 0, 0));
             physicalTarget.transform.localRotation = Quaternion.Euler(new Vector3(-90, 0, 0));
             
+            
             physicalTarget.transform.localScale =
                 newData.behavior == TargetBehavior.Melee ? Vector3.one : Vector3.one * 20f; //Bootleg, melees are normal scale while others are 20x. Fix this later
             approachRing.transform.localRotation = Quaternion.identity;
 
             UpdateTelegraphVisuals(newData);
             trailRenderer.startColor = currentHandColor;
-            approachRing.material.color = VisualConfig.GetTelegraphColorForHandType(newData.handType);
+            
+            //approachRing.SetPropertyBlock(propertyBlock);
+            approachRing.SetPropertyBlock(physicalTargetPropertyBlock);
+
             approachRingFilter.mesh = AssetContainer.GetApproachRingForBehavior(newData.behavior);
 
             meshRenderer.material = newData.behavior == TargetBehavior.Melee
@@ -154,27 +148,25 @@ namespace TargetPreview.Models
             if (telegraphPreset != null)
             {
                 telegraph.gameObject.SetActive(true);
-                telegraph.material.mainTexture = telegraphPreset.cloudTexture;
-                telegraph.material.SetTexture("_MaskTex", telegraphPreset.maskTexture);
-                telegraph.material.color = VisualConfig.GetTelegraphColorForHandType(newData.handType);
-                telegraph.material.SetFloat("_Strength", telegraphPreset.twirlAmount);
-                telegraph.material.SetFloat("_Scale", telegraphPreset.cloudSize);
-                telegraph.material.SetFloat("_Spherize", telegraphPreset.spherizeAmount);
-                telegraph.material.SetFloat("_SpinSpeed", telegraphPreset.spinSpeed);
-                telegraph.material.SetFloat("_MaskScale", telegraphPreset.maskSize);
-                telegraph.material.SetFloat("_TargetTime", newData.time);
-                telegraph.material.SetFloat("_FadeInDuration", flyInTime);
-                telegraph.material.SetFloat("_FadeOutDuration", flyInTime / 4f);
+                var propertyBlock = telegraphPreset.GetMaterialPropertyBlock();
+                propertyBlock.SetColor("_Color", currentHandColor);
+                propertyBlock.SetFloat("_TargetTime", newData.time);
+                propertyBlock.SetFloat("_FadeInDuration", flyInTime);
+                propertyBlock.SetFloat("_FadeOutDuration", flyInTime / 4f);
+                telegraph.SetPropertyBlock(propertyBlock);
             }
             else
             {
                 telegraph.gameObject.SetActive(false);
             }
         }
+        
 
         public void Update() =>
             AnimatePhysicalTarget(TargetManager.Time);
 
+
+        MaterialPropertyBlock physicalTargetPropertyBlock;
         /// <summary>
         /// Animate target based on time.
         /// </summary>
@@ -191,7 +183,8 @@ namespace TargetPreview.Models
                 physicalTarget.localRotation = Quaternion.Euler(Vector3.up * (meleeSpinSpeed * time * meleeDirection) + Vector3.right * 90 * VisualConfig.Instance.meleeRotationSpeed);
             
             //Fade in physical target
-            meshRenderer.material.color = Color.Lerp(currentHandColor, Color.black, distance * distance);
+            physicalTargetPropertyBlock.SetColor("_Color", Color.Lerp(currentHandColor, Color.black, distance * distance));
+            meshRenderer.SetPropertyBlock(physicalTargetPropertyBlock);
 
             if (distance > 0.99f) 
                 approachRing.transform.localScale = Vector3.zero;
@@ -217,45 +210,15 @@ namespace TargetPreview.Models
             return targetData.behavior == TargetBehavior.Melee ? 
                 new Vector3(transform.position.x + -(horizontalMeleeSpawnOffset * meleeDirection), transform.position.y, meleeFlyInDistance) : //If its a melee just move it forward.
                 new Vector3(flyInDistance * direction, flyInDistance * verticalInfluence, flyInDistance * verticalInfluence); //Else use vertical influence.
-        }            
-    }
-
-    [System.Serializable]
-    public struct TargetData
-    {
-        public TargetBehavior behavior;
-        public TargetHandType handType;
-        public float time;
-        public TargetPosition transformData;
-
-        public TargetData(TargetBehavior behavior, TargetHandType color, float time, TargetPosition transformData)
+        }        
+        
+        MaterialPropertyBlock GetPropertyBlock()
         {
-            this.behavior = behavior;
-            this.handType = color;
-            this.time = time;
-            this.transformData = transformData;
+            var propertyBlock = new MaterialPropertyBlock();
+            propertyBlock.SetColor("_Color", currentHandColor);
+            return new MaterialPropertyBlock();
         }
-        /// <summary>
-        /// A constructor for creating placeholder targetData.
-        /// </summary>
-        /// <param name="placeHolder"></param>
-        public TargetData(bool placeHolder)
-        {
-            this.behavior = TargetBehavior.Standard;
-            this.handType = TargetHandType.Left;
-            this.time = 500;
-            this.transformData = new TargetPosition(new Quaternion(), new Vector3());
-        }
-    }
-
-    public struct TargetPosition
-    {
-        public Quaternion rotation;
-        public Vector3 position;
-        public TargetPosition(Quaternion rotation, Vector3 position)
-        {
-            this.rotation = rotation;
-            this.position = position;
-        }
+            
+ 
     }
 }

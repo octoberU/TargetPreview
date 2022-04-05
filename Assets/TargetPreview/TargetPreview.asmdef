@@ -1,0 +1,17 @@
+{
+    "name": "TargetPreview",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f24cf67903b27ae498b3069ecc30cc11",
+        "GUID:624599d49ed864e47a33f8bb4c12ac51"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

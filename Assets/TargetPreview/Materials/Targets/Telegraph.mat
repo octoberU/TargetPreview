@@ -11,9 +11,9 @@ Material:
   m_Shader: {fileID: 4800000, guid: e182e68d7a93b2241a7d62d0187ee9bb, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 4000
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -59,6 +59,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _TargetTextures:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _BumpScale: 1
@@ -86,6 +90,8 @@ Material:
     - _SrcBlend: 1
     - _Strength: -6.9
     - _TargetTime: 1
+    - _TelegraphBoost: 1.8
+    - _TextureIndex: 0
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:

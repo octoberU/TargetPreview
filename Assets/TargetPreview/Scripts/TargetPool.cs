@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TargetPreview.Models;
 using TargetPreview.ScriptableObjects;
 using UnityEngine;
@@ -9,49 +12,60 @@ namespace TargetPreview.Display
     {
         [SerializeField] AssetContainer assetContainer;
         [SerializeField] VisualConfig visualConfig;
-        [SerializeField] Target targetPrefab;
+        [SerializeField] TargetDictionary targetPrefabs;
 
-        const int poolSize = 200;
-        Stack<Target> targetPool = new Stack<Target>();
+        [Serializable]
+        public class TargetDictionary : SerializableDictionary<TargetBehavior, Target> {}
 
-        void Awake() => 
-            FillPool(poolSize);
+        Dictionary<TargetBehavior, Stack<Target>> targets = 
+            Enum.GetValues(typeof(TargetBehavior))
+            .Cast<TargetBehavior>()
+            .ToDictionary(x => x, x => new Stack<Target>());
         
-        void FillPool(int size)
+        const int poolSize = 100;
+
+        void Awake()
         {
-            for (int i = 0; i < size; i++)
-                CreateTarget();
+            assetContainer.FillTextureArrays();
+            FillPool(poolSize);
         }
 
-        void CreateTarget()
+        public void FillPool(int size)
         {
-            Target allocatedTarget = Instantiate(targetPrefab, transform);
-            allocatedTarget.TargetData = new TargetData(placeHolder: true);
-            allocatedTarget.gameObject.SetActive(false);
-            targetPool.Push(allocatedTarget);
+            foreach (var behavior in Enum.GetValues(typeof(TargetBehavior)).Cast<TargetBehavior>())
+                for (int i = 0; i < size; i++)
+                    CreateTarget(behavior);
         }
 
         /// <summary>
-        /// Takes a target from the <see cref="TargetPool"/>.
+        /// 
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="behaviour"></param>
+        void CreateTarget(TargetBehavior behaviour)
+        {
+            Target allocatedTarget = Instantiate(targetPrefabs[behaviour], transform);
+            allocatedTarget.TargetData = new TargetData(placeHolder: true);
+            allocatedTarget.gameObject.SetActive(false);
+            targets[behaviour].Push(allocatedTarget);
+        }
+        
+        /// <summary>Takes a target from the <see cref="TargetPool"/>. </summary>
         /// <returns>A reference to the target</returns>
         public Target Take(TargetData data)
         {
-            if(targetPool.Count == 0)
+            var targetBehavior = data.behavior;
+            if(targets[targetBehavior].Count == 0)
             {
-                CreateTarget();
+                CreateTarget(targetBehavior);
             }
 
-            Target storedTarget = targetPool.Pop();
-            storedTarget
-                .TargetData = data;
-            storedTarget
-                .transform.SetParent(null);
-            storedTarget
-                .Update();                  // Unparented objects perform better,
-            storedTarget                    // but it might be unnecessary.
-                .gameObject.SetActive(true);
+            Target storedTarget = targets[targetBehavior].Pop();
+            
+            storedTarget.TargetData = data;
+            storedTarget.transform.SetParent(null);
+            storedTarget.Update();
+            storedTarget.gameObject.SetActive(true);
+            
             return storedTarget;
         }
 
@@ -59,7 +73,7 @@ namespace TargetPreview.Display
         {
             target.gameObject.SetActive(false);
             target.transform.SetParent(transform);
-            targetPool.Push(target);
+            targets[target.TargetData.behavior].Push(target);
         }
     }
 

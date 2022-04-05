@@ -25,14 +25,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1251925103194549498}
-  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: -0, y: -0.74368155, z: 0.6685341, w: 0}
   m_LocalPosition: {x: 0, y: -0.0026424872, z: -0.002955145}
-  m_LocalScale: {x: 0.85, y: 0.85, z: 0.85}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7342823724191188414}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 96.09201, y: 0, z: 180}
 --- !u!33 &8924493705006019008
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -213,6 +213,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c61c0ad7cb168149a1846e823c10e50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  physicalTarget: {fileID: 3909424181280735337}
+  approachRing: {fileID: 727214769697544474}
+  approachRingFilter: {fileID: 1425938341145035402}
+  trailRenderer: {fileID: 57394313}
+  telegraph: {fileID: 5638066878870975424}
+  meshFilter: {fileID: 6623779517340223289}
+  meshRenderer: {fileID: 2399960413605709830}
   time: 0
   targetFlyInTime: 500
   targetFlyInDistance: 4
