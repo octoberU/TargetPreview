@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TargetPreview.Models;
+using TargetPreview.Targets;
 using TargetPreview.ScriptableObjects;
 using UnityEngine;
 
@@ -63,9 +63,9 @@ namespace TargetPreview.Display
             
             storedTarget.TargetData = data;
             storedTarget.transform.SetParent(null);
-            storedTarget.Update();
             storedTarget.gameObject.SetActive(true);
-            
+            TargetManager.AppendTarget(storedTarget);
+
             return storedTarget;
         }
 
@@ -73,6 +73,7 @@ namespace TargetPreview.Display
         {
             target.gameObject.SetActive(false);
             target.transform.SetParent(transform);
+            TargetManager.RemoveTarget(target);
             targets[target.TargetData.behavior].Push(target);
         }
     }

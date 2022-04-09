@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using TargetPreview.Models;
+using TargetPreview.Targets;
 using UnityEngine;
 
 public class DebugTargetSetter : MonoBehaviour

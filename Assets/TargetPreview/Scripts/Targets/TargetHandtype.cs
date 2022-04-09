@@ -1,5 +1,5 @@
 ﻿
-namespace TargetPreview.Models
+namespace TargetPreview.Targets
 {
 	public enum TargetHandType
 	{

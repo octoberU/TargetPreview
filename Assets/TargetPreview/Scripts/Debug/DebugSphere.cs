@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
-using TargetPreview.Models;
+using TargetPreview.Targets;
 using System.Collections.Generic;
 using TargetPreview.Display;
 using System.Linq;

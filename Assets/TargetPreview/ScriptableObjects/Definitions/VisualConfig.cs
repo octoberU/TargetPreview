@@ -1,4 +1,4 @@
-﻿using TargetPreview.Models;
+﻿using TargetPreview.Targets;
 using UnityEngine;
 
 namespace TargetPreview.ScriptableObjects
