@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace TargetPreview.Models
+namespace TargetPreview.Targets
 {
     [System.Serializable]
     public struct TargetData

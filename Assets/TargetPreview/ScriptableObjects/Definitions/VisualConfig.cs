@@ -1,4 +1,4 @@
-﻿using TargetPreview.Models;
+﻿using TargetPreview.Targets;
 using UnityEngine;
 
 namespace TargetPreview.ScriptableObjects
@@ -18,6 +18,10 @@ namespace TargetPreview.ScriptableObjects
         public float targetSpeedMultiplier = 1f;
         public float meleeSpeedMultiplier = 1f;
         public float meleeRotationSpeed = 0.1f;
+        [Header("TargetCenters")] 
+        public Sprite squareCenter;
+        public Sprite circleCenter;
+        public Sprite rectangleCenter;
         
 
         public static Color GetColorForHandType(TargetHandType handType) =>
@@ -34,5 +38,27 @@ namespace TargetPreview.ScriptableObjects
             Color handColor = GetColorForHandType(handType);
             return new Color(handColor.r * factor, handColor.g * factor, handColor.b * factor);
         }
+
+        public static Sprite GetTargetCenter(TargetBehavior targetBehavior)
+        {
+            switch (targetBehavior)
+            {
+                case TargetBehavior.Standard:
+                    return Instance.circleCenter;
+                
+                case TargetBehavior.Hold:
+                case TargetBehavior.ChainStart:
+                    return Instance.circleCenter;
+                
+                case TargetBehavior.Horizontal:
+                case TargetBehavior.Vertical:
+                    return Instance.rectangleCenter;
+                
+                default:
+                    return null;
+            }
+        }
+
+        
     }
 }

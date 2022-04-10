@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using TargetPreview.Models;
+using TargetPreview.Targets;
 
 namespace TargetPreview.Math
 {

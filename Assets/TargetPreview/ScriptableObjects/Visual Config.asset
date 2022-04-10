@@ -22,3 +22,6 @@ MonoBehaviour:
   targetSpeedMultiplier: 1
   meleeSpeedMultiplier: 1
   meleeRotationSpeed: 0.1
+  squareCenter: {fileID: 21300000, guid: cc9471ea9440b634892fd5b4fae725ed, type: 3}
+  circleCenter: {fileID: 21300000, guid: 4173ff535099b8e46b29cdf32cff3a2c, type: 3}
+  rectangleCenter: {fileID: 21300000, guid: 0e161ce62eae96d41a45ed5f80a3d8ac, type: 3}
