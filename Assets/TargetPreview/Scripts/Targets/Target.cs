@@ -24,17 +24,14 @@ namespace TargetPreview.Targets
                 UpdateVisuals(value);
             }
         }
-        void OnEnable()
-            => TargetManager.AppendTarget(this);
-        
-        void OnDisable()
-            => TargetManager.RemoveTarget(this);
 
         public abstract void TimeUpdate();
 
         public abstract float TargetFlyInTime { get; }
         
         public float ModifiedFlyInTime => VisualConfig.Instance.targetSpeedMultiplier * TargetFlyInTime;
+        
+        public bool ShouldRender => TemporalDistance > 0.01f && TemporalDistance < 1;
 
         public float TemporalDistance
         {

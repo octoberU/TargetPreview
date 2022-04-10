@@ -14,6 +14,7 @@ namespace TargetPreview.Targets
         [SerializeField] MeshRenderer telegraph;
         [SerializeField] MeshFilter meshFilter;
         [SerializeField] MeshRenderer meshRenderer;
+        [SerializeField] protected SpriteRenderer targetCenter;
 
         /// <summary>
         /// Target animation length in ms
@@ -75,6 +76,7 @@ namespace TargetPreview.Targets
 
             UpdateTelegraphVisuals(newData);
             trailRenderer.startColor = currentHandColor;
+            targetCenter.color = currentHandColor;
 
             //approachRing.SetPropertyBlock(propertyBlock);
             approachRing.SetPropertyBlock(physicalTargetPropertyBlock);
@@ -137,6 +139,7 @@ namespace TargetPreview.Targets
                         -(distance * (distance - 2))); //Quadratic ease out. This might need to be linear
 
             physicalTarget.gameObject.SetActive(TargetManager.Time < TargetData.time && timeDifference < ModifiedFlyInTime);
+            targetCenter.enabled = ShouldRender;
         }
         
 

@@ -57,9 +57,9 @@ namespace TargetPreview.Targets
             var temporalDistance = TemporalDistance;
             AnimateFlyIn(temporalDistance);
             
-            var shouldRender = temporalDistance > 0.01f && temporalDistance < 1;
-            meleeRenderer.enabled = shouldRender;
-            trailRenderer.enabled = shouldRender;
+            
+            meleeRenderer.enabled = ShouldRender;
+            trailRenderer.enabled = ShouldRender;
         }
 
 
