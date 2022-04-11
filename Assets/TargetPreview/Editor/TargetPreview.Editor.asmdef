@@ -1,8 +1,13 @@
 {
-    "name": "SerializableDictionary",
+    "name": "TargetPreview.Editor",
     "rootNamespace": "",
-    "references": [],
-    "includePlatforms": [],
+    "references": [
+        "GUID:ebef7e8d7ff64bc46a4c0933e063df94",
+        "GUID:191480a2bb23c044f85b052e7e9568ac"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
