@@ -77,6 +77,7 @@ namespace TargetPreview.Targets
             UpdateTelegraphVisuals(newData);
             trailRenderer.startColor = currentHandColor;
             targetCenter.color = currentHandColor;
+            targetCenter.enabled = newData.behavior != TargetBehavior.Chain; //Bootleg fix until chains get their own prefab.
 
             //approachRing.SetPropertyBlock(propertyBlock);
             approachRing.SetPropertyBlock(physicalTargetPropertyBlock);
