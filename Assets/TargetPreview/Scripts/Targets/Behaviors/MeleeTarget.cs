@@ -16,7 +16,7 @@ namespace TargetPreview.Targets
         /// <summary> Melee animation length in ms </summary>
         public override float TargetFlyInTime => 1000f;
 
-        public override float ModifiedFlyInTime => VisualConfig.meleeSpeedMultiplierStatic * TargetFlyInTime;
+        public override float ModifiedFlyInTime => TargetFlyInTime / VisualConfig.meleeSpeedMultiplierStatic;
 
         /// <summary> The influence of <see cref="GridTarget.targetFlyInDistance"/> on horizontal position in the fly-in animation for melees. </summary>
         public float horizontalInfluence = .4f;

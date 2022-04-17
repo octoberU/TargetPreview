@@ -21,7 +21,7 @@ namespace TargetPreview.Targets
         /// </summary>
         public override float TargetFlyInTime => 500f;
 
-        public override float ModifiedFlyInTime => VisualConfig.targetSpeedMultiplierStatic * TargetFlyInTime;
+        public override float ModifiedFlyInTime => TargetFlyInTime / VisualConfig.targetSpeedMultiplierStatic;
 
         /// <summary>
         /// The distance between a target's base and end position in the animation
