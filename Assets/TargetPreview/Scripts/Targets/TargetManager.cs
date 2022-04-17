@@ -26,7 +26,7 @@ public class TargetManager : MonoBehaviour
     public static void AppendTarget(Target target)
     {
         targets.Add(target);
-        target.TimeUpdate();
+        target.TimeUpdate(time);
     }
     
     public static void RemoveTarget(Target target) =>
@@ -34,7 +34,17 @@ public class TargetManager : MonoBehaviour
 
     static void UpdateManagedTargets()
     {
-        foreach (var target in targets)
-            target.TimeUpdate();
+        int totalTargetCount = targets.Count;
+        for (var i = 0; i < totalTargetCount; i++)
+        {
+            if (targets[i].ShouldRender)
+            {
+                targets[i].TimeUpdate(time);
+                targets[i].gameObject.SetActive(true);
+            }
+            else if(targets[i].gameObject.activeInHierarchy)
+                targets[i].gameObject.SetActive(false);
+        }
+            
     }
 }

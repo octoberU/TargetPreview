@@ -12,11 +12,15 @@ public abstract class SingletonScriptableObject<T> : ScriptableObject where T : 
 {
     static T _instance = null;
     
+    
     [RuntimeInitializeOnLoadMethod]
     void Init()
     {
         _instance = Resources.FindObjectsOfTypeAll<T>().FirstOrDefault();
     }
+    
+    public virtual void Initialize() {}
+    
 
     public static T Instance
     {

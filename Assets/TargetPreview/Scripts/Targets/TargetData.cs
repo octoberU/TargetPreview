@@ -5,9 +5,9 @@ namespace TargetPreview.Targets
     [System.Serializable]
     public struct TargetData
     {
+        public float time;
         public TargetBehavior behavior;
         public TargetHandType handType;
-        public float time;
         public TargetPosition transformData;
 
         public TargetData(TargetBehavior behavior, TargetHandType color, float time, TargetPosition transformData)

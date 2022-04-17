@@ -25,13 +25,19 @@ namespace TargetPreview.Targets
             }
         }
 
-        public abstract void TimeUpdate();
+        public abstract void TimeUpdate(float time);
 
         public abstract float TargetFlyInTime { get; }
-        
-        public float ModifiedFlyInTime => VisualConfig.Instance.targetSpeedMultiplier * TargetFlyInTime;
-        
-        public bool ShouldRender => TemporalDistance > 0.01f && TemporalDistance < 1;
+        public abstract float ModifiedFlyInTime { get; }
+
+        public bool ShouldRender
+        {
+            get
+            {
+                var temporalDistance = TemporalDistance;
+                return temporalDistance > 0.01f && temporalDistance < 1;
+            }
+        }
 
         public float TemporalDistance
         {
@@ -43,5 +49,6 @@ namespace TargetPreview.Targets
         }
 
         public abstract void UpdateVisuals(TargetData newData);
+        
     }
 }

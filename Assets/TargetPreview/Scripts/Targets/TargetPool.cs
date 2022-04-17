@@ -27,6 +27,7 @@ namespace TargetPreview.Display
         void Awake()
         {
             assetContainer.FillTextureArrays();
+            visualConfig.UpdateStaticValues();
             FillPool(poolSize);
         }
 

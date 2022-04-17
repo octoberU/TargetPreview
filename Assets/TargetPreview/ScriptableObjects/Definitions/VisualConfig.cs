@@ -1,4 +1,5 @@
-﻿using TargetPreview.Targets;
+﻿using System;
+using TargetPreview.Targets;
 using UnityEngine;
 
 namespace TargetPreview.ScriptableObjects
@@ -6,23 +7,38 @@ namespace TargetPreview.ScriptableObjects
     public class VisualConfig : SingletonScriptableObject<VisualConfig>
     {
         [Header("Colors")]
-        public Color leftHandColor;
-        public Color rightHandColor;
-        public Color noHandColor = Color.grey;
+        public Color 
+            leftHandColor,
+            rightHandColor,
+            noHandColor = Color.grey;
         [Header("Rendering")]
         public float targetBloomAmount = 2.416924f;
-        public Material meleeTargetMaterial;
-        public Material standardTargetMaterial;
-        public Material telegraphMaterial;
+        public Material 
+            meleeTargetMaterial,
+            standardTargetMaterial,
+            telegraphMaterial;
         [Header("Settings")]
-        public float targetSpeedMultiplier = 1f;
-        public float meleeSpeedMultiplier = 1f;
-        public float meleeRotationSpeed = 0.1f;
+        public float 
+            targetSpeedMultiplier = 1f,
+            meleeSpeedMultiplier = 1f,
+            meleeRotationSpeed = 0.1f;
         [Header("TargetCenters")] 
-        public Sprite squareCenter;
-        public Sprite circleCenter;
-        public Sprite rectangleCenter;
-        
+        public Sprite 
+            squareCenter,
+            circleCenter,
+            rectangleCenter;
+
+        public static float
+            targetSpeedMultiplierStatic,
+            meleeSpeedMultiplierStatic;
+
+        [RuntimeInitializeOnLoadMethod]
+        public void UpdateStaticValues()
+        {
+            targetSpeedMultiplierStatic = targetSpeedMultiplier;
+            meleeSpeedMultiplierStatic = meleeSpeedMultiplier;
+        }
+
 
         public static Color GetColorForHandType(TargetHandType handType) =>
             handType switch

@@ -21,6 +21,8 @@ namespace TargetPreview.Targets
         /// </summary>
         public override float TargetFlyInTime => 500f;
 
+        public override float ModifiedFlyInTime => VisualConfig.targetSpeedMultiplierStatic * TargetFlyInTime;
+
         /// <summary>
         /// The distance between a target's base and end position in the animation
         /// </summary>
@@ -120,8 +122,9 @@ namespace TargetPreview.Targets
             }
         }
 
-        public override void TimeUpdate()
+        public override void TimeUpdate(float time)
         {
+
             float distance = TemporalDistance;
             float timeDifference = TargetData.time - TargetManager.Time;
 

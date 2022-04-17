@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using TargetPreview.Math;
 using TargetPreview.ScriptableObjects;
 using UnityEngine;
@@ -15,6 +16,8 @@ namespace TargetPreview.Targets
         /// <summary> Melee animation length in ms </summary>
         public override float TargetFlyInTime => 1000f;
 
+        public override float ModifiedFlyInTime => VisualConfig.meleeSpeedMultiplierStatic * TargetFlyInTime;
+
         /// <summary> The influence of <see cref="GridTarget.targetFlyInDistance"/> on horizontal position in the fly-in animation for melees. </summary>
         public float horizontalInfluence = .4f;
 
@@ -30,6 +33,8 @@ namespace TargetPreview.Targets
         public float verticalMeleeInfluence = .4f;
         
         float flyInDistance => meleeFlyInDistance;
+        
+        
 
         int meleeDirection;
 
@@ -43,10 +48,13 @@ namespace TargetPreview.Targets
             meleeRenderer.material = VisualConfig.Instance.meleeTargetMaterial;
             meleeDirection = targetData.transformData.position.x > 0 ? 1 : -1;
             currentHandColor = VisualConfig.GetColorForHandType(targetData.handType);
+            transform.position = newData.transformData.position;
+            transform.rotation = newData.transformData.rotation;
         }
 
-        public override void TimeUpdate()
+        public override void TimeUpdate(float time)
         {
+
             meleeSphereTransform.localRotation = Quaternion.Euler(
                 Vector3.up * (meleeSpinSpeed * TargetManager.Time * meleeDirection) +
                 Vector3.right * 90 * VisualConfig.Instance
@@ -70,7 +78,7 @@ namespace TargetPreview.Targets
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void AnimateFlyIn(float distance)
         {
-            meleeSphereTransform.position = TargetTransform.MeleeParabola(Vector3.zero, GetFlyInPosition(),
+            meleeSphereTransform.localPosition = TargetTransform.MeleeParabola(Vector3.zero, GetFlyInPosition(),
                 flyInDistance * verticalMeleeInfluence, flyInDistance * horizontalInfluence, distance,
                 meleeDirection);
         }
@@ -80,5 +88,27 @@ namespace TargetPreview.Targets
                 transform.position.y, meleeFlyInDistance);
 
 
+#if UNITY_EDITOR
+        void OnDrawGizmosSelected() //Draw curve helper.
+        {
+            Gizmos.matrix = transform.localToWorldMatrix;
+            const int curveSamples = 20;
+            Vector3 lastPos = TargetTransform.MeleeParabola(Vector3.zero, GetFlyInPosition(),
+                flyInDistance * verticalMeleeInfluence, flyInDistance * horizontalInfluence, 0,
+                meleeDirection);
+            
+            
+            for (int i = 0; i < curveSamples; i++)
+            {
+                var pos =
+                    TargetTransform.MeleeParabola(Vector3.zero, GetFlyInPosition(),
+                        flyInDistance * verticalMeleeInfluence, flyInDistance * horizontalInfluence, (float)i / (float)curveSamples,
+                        meleeDirection);
+                
+                Gizmos.DrawLine(lastPos, pos);
+                lastPos = pos;
+            }
+        }
+#endif
     }
 }

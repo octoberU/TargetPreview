@@ -21,14 +21,18 @@ namespace Assets.TargetPreview.Scripts.Debug
         [SerializeField] uint debugTime = 0;
         [SerializeField] float timeOffsetPerTarget = 480;
         
+        uint lastDebugTime = 0;
 
         void Start() => 
             CreateDebugSphere();
 
         void Update()
         {
-            if (debugTime > 0)
+            if (debugTime > 0 && debugTime != lastDebugTime)
+            {
+                lastDebugTime = debugTime;
                 TargetManager.Time = debugTime;
+            }
         }
 
         [ContextMenu("Create debug sphere")]

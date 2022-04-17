@@ -540,6 +540,10 @@ PrefabInstance:
       value: 172
       objectReference: {fileID: 0}
     - target: {fileID: 4946275887064091268, guid: 91ca3e10da89a5d48afa44ad5e3e7080, type: 3}
+      propertyPath: pitchCount
+      value: 103
+      objectReference: {fileID: 0}
+    - target: {fileID: 4946275887064091268, guid: 91ca3e10da89a5d48afa44ad5e3e7080, type: 3}
       propertyPath: timeOffsetPerTarget
       value: 100
       objectReference: {fileID: 0}
