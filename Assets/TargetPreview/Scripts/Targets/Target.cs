@@ -10,6 +10,7 @@ namespace TargetPreview.Targets
     {
         protected Color currentHandColor;
         protected TargetData targetData;
+        public TargetManager parentManager;
         
         /// <summary>
         /// Contains all target data which influences the target's appearance.

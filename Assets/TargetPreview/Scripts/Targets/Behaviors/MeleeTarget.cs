@@ -56,7 +56,7 @@ namespace TargetPreview.Targets
         {
 
             meleeSphereTransform.localRotation = Quaternion.Euler(
-                Vector3.up * (meleeSpinSpeed * TargetManager.Time * meleeDirection) +
+                Vector3.up * (meleeSpinSpeed * time * meleeDirection) +
                 Vector3.right * 90 * VisualConfig.Instance
                     .meleeRotationSpeed);
 

@@ -126,7 +126,7 @@ namespace TargetPreview.Targets
         {
 
             float distance = TemporalDistance;
-            float timeDifference = TargetData.time - TargetManager.Time;
+            float timeDifference = TargetData.time - time;
 
             AnimateFlyIn(distance);
             
@@ -142,7 +142,7 @@ namespace TargetPreview.Targets
                     Vector3.Lerp(Vector3.zero, approachRingStartSize,
                         -(distance * (distance - 2))); //Quadratic ease out. This might need to be linear
 
-            physicalTarget.gameObject.SetActive(TargetManager.Time < TargetData.time && timeDifference < ModifiedFlyInTime);
+            physicalTarget.gameObject.SetActive(time < TargetData.time && timeDifference < ModifiedFlyInTime);
             targetCenter.enabled = ShouldRender;
         }
         

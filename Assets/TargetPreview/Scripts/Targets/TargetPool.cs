@@ -21,7 +21,9 @@ namespace TargetPreview.Display
             Enum.GetValues(typeof(TargetBehavior))
             .Cast<TargetBehavior>()
             .ToDictionary(x => x, x => new Stack<Target>());
-        
+
+        [SerializeField] TargetManager targetManager;
+
         const int poolSize = 100;
 
         void Awake()
@@ -65,7 +67,7 @@ namespace TargetPreview.Display
             storedTarget.TargetData = data;
             storedTarget.transform.SetParent(null);
             storedTarget.gameObject.SetActive(true);
-            TargetManager.AppendTarget(storedTarget);
+            targetManager.AppendTarget(storedTarget);
 
             return storedTarget;
         }
@@ -74,7 +76,7 @@ namespace TargetPreview.Display
         {
             target.gameObject.SetActive(false);
             target.transform.SetParent(transform);
-            TargetManager.RemoveTarget(target);
+            targetManager.RemoveTarget(target);
             targets[target.TargetData.behavior].Push(target);
         }
     }

@@ -1,0 +1,3 @@
+[submodule "Assets/External/Audica-.Net-Tools"]
+	path = Assets/External/Audica-.Net-Tools
+	url = https://github.com/octoberU/Audica-.NET-Tools

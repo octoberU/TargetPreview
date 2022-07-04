@@ -524,6 +524,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1aca9c3509c85e34191099ced5f777df, type: 3}
+--- !u!114 &805525193674342250 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5883698305762973933, guid: 1aca9c3509c85e34191099ced5f777df, type: 3}
+  m_PrefabInstance: {fileID: 805525193674342249}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6859936520a141043b9bdb0acffdfd51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &805525193674342251 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5568782603203305888, guid: 1aca9c3509c85e34191099ced5f777df, type: 3}
+  m_PrefabInstance: {fileID: 805525193674342249}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e26bee032f748b8b8373e99d3dcd7ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4946275886217095920
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -540,9 +562,17 @@ PrefabInstance:
       value: 172
       objectReference: {fileID: 0}
     - target: {fileID: 4946275887064091268, guid: 91ca3e10da89a5d48afa44ad5e3e7080, type: 3}
+      propertyPath: cueManager
+      value: 
+      objectReference: {fileID: 805525193674342251}
+    - target: {fileID: 4946275887064091268, guid: 91ca3e10da89a5d48afa44ad5e3e7080, type: 3}
       propertyPath: pitchCount
       value: 103
       objectReference: {fileID: 0}
+    - target: {fileID: 4946275887064091268, guid: 91ca3e10da89a5d48afa44ad5e3e7080, type: 3}
+      propertyPath: targetManager
+      value: 
+      objectReference: {fileID: 805525193674342250}
     - target: {fileID: 4946275887064091268, guid: 91ca3e10da89a5d48afa44ad5e3e7080, type: 3}
       propertyPath: timeOffsetPerTarget
       value: 100

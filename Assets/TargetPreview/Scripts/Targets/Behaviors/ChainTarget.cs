@@ -1,18 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using TargetPreview.Targets;
 using UnityEngine;
 
-public class ChainTarget : MonoBehaviour
+public class ChainStart : GridTarget
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public List<ChainNode> nodes = new List<ChainNode>();
 
-    // Update is called once per frame
-    void Update()
+    public override void TimeUpdate(float time)
     {
-        
+        base.TimeUpdate(time);
+        foreach (var chainNode in nodes)
+        {
+            chainNode.OriginalTimeUpdate(time);
+        }
     }
 }
