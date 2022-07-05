@@ -49,6 +49,7 @@ namespace TargetPreview.Display
             Target allocatedTarget = Instantiate(targetPrefabs[behaviour], transform);
             allocatedTarget.TargetData = new TargetData(placeHolder: true);
             allocatedTarget.gameObject.SetActive(false);
+            allocatedTarget.creator = this;
             targets[behaviour].Push(allocatedTarget);
         }
         
@@ -77,6 +78,7 @@ namespace TargetPreview.Display
             target.gameObject.SetActive(false);
             target.transform.SetParent(transform);
             targetManager.RemoveTarget(target);
+            target.OnReturnedToPool();
             targets[target.TargetData.behavior].Push(target);
         }
     }

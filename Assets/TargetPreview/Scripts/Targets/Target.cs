@@ -3,6 +3,7 @@ using UnityEngine;
 using TargetPreview.ScriptableObjects;
 using TargetPreview.Math;
 using System.Runtime.CompilerServices;
+using TargetPreview.Display;
 
 namespace TargetPreview.Targets
 {
@@ -10,8 +11,8 @@ namespace TargetPreview.Targets
     {
         protected Color currentHandColor;
         protected TargetData targetData;
-        public TargetManager parentManager;
-        
+        public TargetPool creator;
+
         /// <summary>
         /// Contains all target data which influences the target's appearance.
         /// </summary>
@@ -51,5 +52,10 @@ namespace TargetPreview.Targets
 
         public abstract void UpdateVisuals(TargetData newData);
         
+        public virtual void OnReturnedToPool()
+        {
+            // Do nothing
+        }
+                
     }
 }

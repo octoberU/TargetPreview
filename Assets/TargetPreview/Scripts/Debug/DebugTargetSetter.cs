@@ -12,7 +12,7 @@ public class DebugTargetSetter : MonoBehaviour
         var targetData = target.TargetData;
         var newHandType = targetData.handType == TargetHandType.Left ? TargetHandType.Right : TargetHandType.Left;
         target.TargetData = new TargetData
-            (targetData.behavior, newHandType, targetData.time, targetData.transformData);
+            (targetData.behavior, newHandType, targetData.time, targetData.transformData, targetData.cue);
     }
 
     [ContextMenu("CycleBehavior")]
@@ -22,6 +22,6 @@ public class DebugTargetSetter : MonoBehaviour
         var targetData = target.TargetData;
         var newBehavior = (int)targetData.behavior == 3 ? TargetBehavior.Standard : (TargetBehavior)((int)targetData.behavior + 1);
         target.TargetData = new TargetData
-            (newBehavior, targetData.handType, targetData.time, targetData.transformData);
+            (newBehavior, targetData.handType, targetData.time, targetData.transformData, targetData.cue);
     }
 }

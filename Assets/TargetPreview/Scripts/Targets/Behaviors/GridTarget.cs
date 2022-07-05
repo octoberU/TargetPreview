@@ -7,13 +7,13 @@ namespace TargetPreview.Targets
 {
     public class GridTarget : Target
     {
-        [SerializeField] Transform physicalTarget;
-        [SerializeField] MeshRenderer approachRing;
+        [SerializeField] protected Transform physicalTarget;
+        [SerializeField] protected MeshRenderer approachRing;
         [SerializeField] MeshFilter approachRingFilter;
         [SerializeField] TrailRenderer trailRenderer;
-        [SerializeField] MeshRenderer telegraph;
-        [SerializeField] MeshFilter meshFilter;
-        [SerializeField] MeshRenderer meshRenderer;
+        [SerializeField] protected MeshRenderer telegraph;
+        [SerializeField] protected MeshFilter meshFilter;
+        [SerializeField] protected MeshRenderer meshRenderer;
         [SerializeField] protected SpriteRenderer targetCenter;
 
         /// <summary>
@@ -39,12 +39,12 @@ namespace TargetPreview.Targets
         /// <remarks>This is captured during <see cref="Target.Awake"/></remarks>
         public Vector3 approachRingStartSize;
 
-        MaterialPropertyBlock physicalTargetPropertyBlock;
+        protected MaterialPropertyBlock physicalTargetPropertyBlock;
         
 
-        float flyInDistance => targetFlyInDistance;
+        protected float flyInDistance => targetFlyInDistance;
 
-        public void Awake() =>
+        public virtual void Awake() =>
             approachRingStartSize = approachRing.transform.localScale;
 
         /// <summary>
@@ -61,14 +61,12 @@ namespace TargetPreview.Targets
                 AssetContainer.Instance.GetPropertyBlockPhysicalTarget(newData.behavior, currentHandColor);
             meshRenderer.SetPropertyBlock(physicalTargetPropertyBlock);
 
-
             transform.localPosition = newData.transformData.position;
             transform.localRotation = newData.transformData.rotation;
 
             //Reset transforms
-            telegraph.transform.localRotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+            if(telegraph) telegraph.transform.localRotation = Quaternion.Euler(new Vector3(-90, 0, 0));
             physicalTarget.transform.localRotation = Quaternion.Euler(new Vector3(-90, 0, 0));
-
 
             physicalTarget.transform.localScale =
                 newData.behavior == TargetBehavior.Melee
@@ -87,19 +85,6 @@ namespace TargetPreview.Targets
             approachRingFilter.mesh = AssetContainer.GetApproachRingForBehavior(newData.behavior);
 
             meshRenderer.material = VisualConfig.Instance.standardTargetMaterial;
-
-
-            //Fix orientation for angled targets
-            if (newData.behavior == TargetBehavior.Vertical)
-            {
-                approachRing.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, -90));
-                telegraph.transform.Rotate(-180, -90, 180, Space.Self);
-            }
-            else if (newData.behavior == TargetBehavior.Horizontal)
-            {
-                physicalTarget.Rotate(-180, -90, 180, Space.Self);
-                telegraph.transform.localRotation = Quaternion.Euler(new Vector3(-90, 0, 0));
-            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -152,11 +137,11 @@ namespace TargetPreview.Targets
         /// </summary>
         /// <param name="distance">A 0-1 lerp used to drive the animation time.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void AnimateFlyIn(float distance) =>
+        public virtual void AnimateFlyIn(float distance) =>
             physicalTarget.transform.localPosition = TargetTransform.Parabola(Vector3.zero, GetFlyInPosition(), flyInDistance * verticalInfluence,
                         distance);
 
-        Vector3 GetFlyInPosition()
+        protected Vector3 GetFlyInPosition()
         {
             float direction = targetData.handType == TargetHandType.Left ? -1f : 1f;
             return new Vector3(flyInDistance * direction, flyInDistance * verticalInfluence,

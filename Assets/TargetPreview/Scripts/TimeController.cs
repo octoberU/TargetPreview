@@ -7,7 +7,7 @@ namespace TargetPreview.Scripts
     {
         public static float Time;
         
-        static List<IReceiveTimeUpdates> updatesArray = new List<IReceiveTimeUpdates>(1000);
+        static List<IReceiveTimeUpdates> updatesArray = new List<IReceiveTimeUpdates>(10);
 
         public static void SetTime(float time)
         {

@@ -12,8 +12,8 @@ namespace TargetPreview.Scripts.Targets
         [SerializeField] TargetPool targetPool;
         
         public float cueLookAheadTimeMs = 3000f;
-        
-        TargetCue[] targetCues = new TargetCue[0];
+
+        TargetCue[] targetCues = { };
         
         public TargetCue[] TargetCues
         {
@@ -24,6 +24,7 @@ namespace TargetPreview.Scripts.Targets
                     value
                         .OrderBy(x => x.timeMs)
                         .ThenBy(x => (int)x.behavior)
+                        .ThenBy(x => (int)x.handType)
                         .ToArray(); //Ensure that cues are always sorted by time and behavior. This is extremely important when handling chains.
                 OnTimeUpdated(TimeController.Time);
             }
@@ -48,7 +49,7 @@ namespace TargetPreview.Scripts.Targets
             
             for (int i = 0; i < targetCues.Length; i++)
             {
-                if(WithinLookAheadTime(targetCues[i].timeMs) && !IsCueCurrentlyActive(targetCues[i]))
+                if(!ShouldCullCue(targetCues[i]) && !IsCueCurrentlyActive(targetCues[i]))
                 {
                     AddActiveCue(targetCues[i]);
                 }
@@ -56,9 +57,12 @@ namespace TargetPreview.Scripts.Targets
             
             bool WithinLookAheadTime(float cueTimeMs) =>
                 Mathf.Abs(cueTimeMs - time) <= cueLookAheadTimeMs;
-            
+
+            bool CurrentlySustained(TargetCue cue) =>
+                (time >= cue.timeMs && time <= cue.timeEndMs);
+
             bool ShouldCullCue(TargetCue cue) =>
-                !WithinLookAheadTime(cue.timeMs);
+                !WithinLookAheadTime(cue.timeMs) && !CurrentlySustained(cue);
 
             bool IsCueCurrentlyActive(TargetCue cue)
             {

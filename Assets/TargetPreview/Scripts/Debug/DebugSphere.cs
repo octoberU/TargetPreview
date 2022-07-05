@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using TargetPreview.Targets;
 using System.Collections.Generic;
+using System.IO;
 using TargetPreview.Display;
 using System.Linq;
 using AudicaTools;
@@ -10,6 +11,7 @@ using EasyButtons;
 using TargetPreview.Math;
 using TargetPreview.Scripts;
 using TargetPreview.Scripts.Targets;
+using TargetPreview.Scripts.Targets.Extensions;
 using Random = UnityEngine.Random;
 
 namespace Assets.TargetPreview.Scripts.Debug
@@ -30,7 +32,7 @@ namespace Assets.TargetPreview.Scripts.Debug
         uint lastDebugTime = 0;
 
         void Start() =>
-            CreateDebugSphere();
+            LoadMockAudicaFile();
 
         void Update()
         {
@@ -73,17 +75,43 @@ namespace Assets.TargetPreview.Scripts.Debug
                     (Random.Range(-randomOffset.x, randomOffset.x) + offset.x,
                         Random.Range(-randomOffset.y, randomOffset.y) + offset.y,
                         Random.Range(-randomOffset.x, randomOffset.z) + offset.z));
-                //
-                // TargetData targetData =
-                //     new TargetData(targetBehavior, targetHandType, i * timeOffsetPerTarget, targetPos);
-                // Target newTarget = targetPool.Take(targetData);
-                // sphereTargets.Add(newTarget);
 
-                cues.Add(new TargetCue((int)(i * timeOffsetPerTarget), 1, i, 1, new Cue.GridOffset(), 0, (int)targetHandType,
-                    (int)targetBehavior));
+                var cue = new TargetCue()
+                {
+                    tick = (int)(i * timeOffsetPerTarget),
+                    tickLength = 128,
+                    pitch = i,
+                    behavior = targetBehavior,
+                    handType = targetHandType,
+                };
+                
+                cues.Add(cue);
             }
 
             cueManager.TargetCues = cues.ToArray();
         }
+
+#if UNITY_EDITOR
+        [ContextMenu("Load mock audica file")]
+        [Button]
+        void LoadMockAudicaFile()
+        {
+            cueManager.TargetCues =
+                GetTestAudica()
+                    .expert
+                    .cues
+                    .AsTargetCues();
+        }
+        
+        public Audica GetTestAudica()
+        {
+            string testAudicaPath = Path.Combine(Application.dataPath, "TargetPreview", "Editor", "Tests", "TestResources",
+                "GivenUp-Continuum.audica");
+            string fullPath = Path.GetFullPath(testAudicaPath);
+
+            return new Audica(fullPath);
+        }
+#endif
+        
     }
 }

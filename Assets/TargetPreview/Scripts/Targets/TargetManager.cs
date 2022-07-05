@@ -25,14 +25,6 @@ public class TargetManager : MonoBehaviour, IReceiveTimeUpdates
     public void AppendTarget(Target target)
     {
         targets.Add(target);
-        target.parentManager = this;
-
-        var targetBehavior = target.TargetData.behavior;
-        if(targetBehavior == TargetBehavior.Chain || targetBehavior == TargetBehavior.ChainStart)
-        {
-            HandledChainNodes(target);
-        }
-        
         target.TimeUpdate(Time);
     }
     
@@ -44,13 +36,7 @@ public class TargetManager : MonoBehaviour, IReceiveTimeUpdates
         int totalTargetCount = targets.Count;
         for (var i = 0; i < totalTargetCount; i++)
         {
-            if (targets[i].ShouldRender)
-            {
-                targets[i].TimeUpdate(Time);
-                targets[i].gameObject.SetActive(true);
-            }
-            else if(targets[i].gameObject.activeInHierarchy)
-                targets[i].gameObject.SetActive(false);
+            targets[i].TimeUpdate(Time);
         }
     }
 
@@ -59,21 +45,6 @@ public class TargetManager : MonoBehaviour, IReceiveTimeUpdates
         Time = time;
         Shader.SetGlobalFloat(GlobalTimeProperty, Time);
         UpdateManagedTargets();
-    }
-
-    void HandledChainNodes(Target target)
-    {
-        switch (target.TargetData.behavior)
-        {
-            case TargetBehavior.ChainStart:
-                lastChainHeadForHand[target.TargetData.handType] = target;
-                break;
-            case TargetBehavior.Chain:
-                ((ChainStart)lastChainHeadForHand[target.TargetData.handType]).nodes.Add((ChainNode)target);
-                break;
-            default:
-                break;
-        }
     }
     
     
