@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TargetPreview.Scripts.Targets;
+using UnityEngine;
 using TargetPreview.Targets;
 
 namespace TargetPreview.Math
@@ -24,9 +25,11 @@ namespace TargetPreview.Math
             meleeVerticalOffset = 0.871f,
             meleeDepthOffset = 0.75f,
             meleeHeightDifference = 0.5f;
-        
-        
-        
+
+
+        public static TargetPosition CalculateTargetTransform(TargetCue cue) =>
+            CalculateTargetTransform(cue.pitch, (cue.xOffset, cue.yOffset, cue.zOffset));
+
         public static TargetPosition CalculateTargetTransform(int pitch, (float x, float y, float z) offset)
         {
             if(pitch >= meleePitchBottomLeft && pitch <= meleePitchTopRight)

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using TargetPreview.Display;
-using TargetPreview.Targets;
 using UnityEngine;
 
 namespace TargetPreview.Scripts.Targets
@@ -10,11 +9,12 @@ namespace TargetPreview.Scripts.Targets
     public class CueManager : MonoBehaviour, IReceiveTimeUpdates
     {
         [SerializeField] TargetPool targetPool;
+        [SerializeField] TargetConnectorManager targetConnectorManager;
         
         public float cueLookAheadTimeMs = 3000f;
 
         TargetCue[] targetCues = { };
-        
+
         public TargetCue[] TargetCues
         {
             get => targetCues;
@@ -31,6 +31,8 @@ namespace TargetPreview.Scripts.Targets
         }
         
         List<TargetReference> activeCues = new List<TargetReference>(300);
+        
+        Dictionary<float, TargetReference> activeCueTickLookup = new (300);
 
         void Awake() =>
             TimeController.AddListener(this);
@@ -80,23 +82,46 @@ namespace TargetPreview.Scripts.Targets
             }
         }
 
-        void AddActiveCue(TargetCue cue) =>
-            activeCues.Add(new TargetReference()
+        void AddActiveCue(TargetCue cue)
+        {
+            var targetReference = new TargetReference()
             {
                 target = targetPool.Take(cue),
                 cue = cue
-            });
+            };
+            
+            var connection = FindCueConnection(targetReference); //Handle connecting cues.
+            if(connection.HasValue)
+                targetConnectorManager.TryAddConnection(connection.Value.Item1, connection.Value.Item2);
+            
+            activeCues.Add(targetReference);
+        }
+
+        (TargetReference, TargetReference)? FindCueConnection(TargetReference newReference)
+        {
+            foreach (var targetReference in activeCues)
+            {
+                if(targetReference.cue.tick == newReference.cue.tick &&
+                   targetReference.cue.behavior == newReference.cue.behavior &&
+                     targetReference.cue.handType != newReference.cue.handType)
+                {
+                    return (targetReference, newReference);
+                }
+            }
+
+            return null;
+        }
 
         void RemoveActiveCue(TargetReference reference)
         {
             targetPool.Return(reference.target);
             activeCues.Remove(reference);
+            
+            var connection = FindCueConnection(reference);
+            if(connection.HasValue)
+                targetConnectorManager.RemoveConnection(connection.Value.Item1, connection.Value.Item2);
         }
 
-        struct TargetReference
-        {
-            public TargetCue cue;
-            public Target target;
-        }
+
     }
 }

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 805525193636671361}
   - component: {fileID: 5883698305762973933}
   - component: {fileID: 5568782603203305888}
+  - component: {fileID: 7254617764379784687}
   m_Layer: 0
   m_Name: TargetPool
   m_TagString: Untagged
@@ -85,4 +86,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetPool: {fileID: 805525193636671361}
+  targetConnectorManager: {fileID: 7254617764379784687}
   cueLookAheadTimeMs: 3000
+--- !u!114 &7254617764379784687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 805525193636671374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07afdb4f2a8c41b6bbc087d072c154a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  connectorPrefab: {fileID: 6305221659072145388, guid: 7cdf8c2d289fabd48b06541d58318a21, type: 3}
