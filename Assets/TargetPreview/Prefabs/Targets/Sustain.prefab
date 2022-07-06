@@ -211,9 +211,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 7975070000556433156}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86cfdf39988d4237a0f61bec7660ffee, type: 3}
+  m_Script: {fileID: 11500000, guid: d377857d8e5595d4b8b2c4ee7d75bcce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  creator: {fileID: 0}
   physicalTarget: {fileID: 3909424181280735337}
   approachRing: {fileID: 727214769697544474}
   approachRingFilter: {fileID: 1425938341145035402}
@@ -225,6 +226,8 @@ MonoBehaviour:
   targetFlyInDistance: 4
   verticalInfluence: 0.2
   approachRingStartSize: {x: 0, y: 0, z: 0}
+  sustainSpinDistance: 2
+  sustainSpinRotation: 720
 --- !u!1 &8229969100255964208
 GameObject:
   m_ObjectHideFlags: 0

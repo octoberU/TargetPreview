@@ -52,6 +52,9 @@ namespace TargetPreview.Targets
             transform.rotation = newData.transformData.rotation;
         }
 
+        public override Transform GetPhysicalTargetTransform() =>
+            meleeSphereTransform;
+
         public override void TimeUpdate(float time)
         {
 

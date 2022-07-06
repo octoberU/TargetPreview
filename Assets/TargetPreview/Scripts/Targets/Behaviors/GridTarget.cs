@@ -87,6 +87,9 @@ namespace TargetPreview.Targets
             meshRenderer.material = VisualConfig.Instance.standardTargetMaterial;
         }
 
+        public override Transform GetPhysicalTargetTransform() =>
+            physicalTarget.transform;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void UpdateTelegraphVisuals(TargetData newData)
         {
@@ -115,10 +118,7 @@ namespace TargetPreview.Targets
 
             AnimateFlyIn(distance);
             
-            //Fade in physical target
-            physicalTargetPropertyBlock.SetColor("_Color",
-                Color.Lerp(currentHandColor, Color.black, distance * distance));
-            meshRenderer.SetPropertyBlock(physicalTargetPropertyBlock);
+            FadePhysicalTarget(distance);
 
             if (distance > 0.99f)
                 approachRing.transform.localScale = Vector3.zero;
@@ -127,10 +127,20 @@ namespace TargetPreview.Targets
                     Vector3.Lerp(Vector3.zero, approachRingStartSize,
                         -(distance * (distance - 2))); //Quadratic ease out. This might need to be linear
 
-            physicalTarget.gameObject.SetActive(time < TargetData.time && timeDifference < ModifiedFlyInTime);
-            targetCenter.enabled = ShouldRender;
+            
+            var shouldRender = ShouldRender;
+            targetCenter.enabled = shouldRender;
+            physicalTarget.gameObject.SetActive(shouldRender);
         }
-        
+
+        protected virtual void FadePhysicalTarget(float distance)
+        {
+            //Fade in physical target
+            physicalTargetPropertyBlock.SetColor("_Color",
+                Color.Lerp(currentHandColor, Color.black, distance * distance));
+            meshRenderer.SetPropertyBlock(physicalTargetPropertyBlock);
+        }
+
 
         /// <summary>
         /// Animates the target along an arc.
@@ -154,5 +164,7 @@ namespace TargetPreview.Targets
             propertyBlock.SetColor("_Color", currentHandColor);
             return new MaterialPropertyBlock();
         }
+        
+
     }
 }

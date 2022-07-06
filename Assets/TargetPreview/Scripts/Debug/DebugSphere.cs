@@ -26,11 +26,13 @@ namespace Assets.TargetPreview.Scripts.Debug
         [SerializeField] int pitchCount = 12;
         [SerializeField] Vector3 randomOffset;
         [SerializeField] Vector3 offset;
-        [SerializeField] uint debugTime = 0;
-        [SerializeField] float timeOffsetPerTarget = 480;
-
-        uint lastDebugTime = 0;
-
+        [SerializeField] bool play = false;
+        [SerializeField] float 
+            debugTime = 0,
+            timeOffsetPerTarget = 480,
+            playbackSpeed = 1f;
+       
+        float lastDebugTime = 0;
         void Start() =>
             LoadMockAudicaFile();
 
@@ -40,6 +42,11 @@ namespace Assets.TargetPreview.Scripts.Debug
             {
                 lastDebugTime = debugTime;
                 TimeController.SetTime(debugTime);
+            }
+
+            if (play)
+            {
+                debugTime += (Time.deltaTime * 1000f) * playbackSpeed;
             }
         }
 

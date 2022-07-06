@@ -25,9 +25,11 @@ namespace TargetPreview.Scripts.Targets
             lineRenderer.enabled = shouldRender;
             if(!shouldRender)
                 return;
+
+            bool targetComplete = firstTarget.TargetData.time < TimeController.Time;
             
-            positions[0] = firstTarget.transform.position;
-            positions[1] = secondTarget.transform.position;
+            positions[0] = targetComplete ? firstTarget.GetPhysicalTargetTransform().position : firstTarget.transform.position;
+            positions[1] = targetComplete ? secondTarget.GetPhysicalTargetTransform().position : secondTarget.transform.position;
             lineRenderer.positionCount = 2;
             lineRenderer.SetPositions(positions);
         }

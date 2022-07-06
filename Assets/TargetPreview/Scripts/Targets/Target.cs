@@ -11,7 +11,7 @@ namespace TargetPreview.Targets
     {
         protected Color currentHandColor;
         protected TargetData targetData;
-        public TargetPool creator;
+        [HideInInspector] public TargetPool creator;
 
         /// <summary>
         /// Contains all target data which influences the target's appearance.
@@ -32,7 +32,7 @@ namespace TargetPreview.Targets
         public abstract float TargetFlyInTime { get; }
         public abstract float ModifiedFlyInTime { get; }
 
-        public bool ShouldRender
+        public virtual bool ShouldRender
         {
             get
             {
@@ -56,6 +56,8 @@ namespace TargetPreview.Targets
         {
             // Do nothing
         }
-                
+
+        public abstract Transform GetPhysicalTargetTransform();
+
     }
 }
