@@ -47,7 +47,7 @@ public class ChainStart : GridTarget
     {
         var shouldRender = TemporalDistance < 0.99f;
         lineRenderer.enabled = shouldRender;
-        if (!shouldRender) return;
+        if (!shouldRender || !nativePositions.IsCreated) return;
         
         
         nodeCount = nodes.Count;

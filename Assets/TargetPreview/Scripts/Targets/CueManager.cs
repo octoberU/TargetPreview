@@ -29,7 +29,10 @@ namespace TargetPreview.Scripts.Targets
                 OnTimeUpdated(TimeController.Time);
             }
         }
-        
+
+        public List<TargetReference> ActiveCues =>
+            activeCues;
+
         List<TargetReference> activeCues = new List<TargetReference>(300);
         
         Dictionary<float, TargetReference> activeCueTickLookup = new (300);
@@ -43,10 +46,10 @@ namespace TargetPreview.Scripts.Targets
         public void OnTimeUpdated(float time)
         {
             //Clean up any active cues.
-            for (var i = activeCues.Count - 1; i >= 0; i--)
+            for (var i = ActiveCues.Count - 1; i >= 0; i--)
             {
-                if (ShouldCullCue(activeCues[i].cue))
-                    RemoveActiveCue(activeCues[i]);
+                if (ShouldCullCue(ActiveCues[i].cue))
+                    RemoveActiveCue(ActiveCues[i]);
             }
             
             for (int i = 0; i < targetCues.Length; i++)
@@ -69,9 +72,9 @@ namespace TargetPreview.Scripts.Targets
             bool IsCueCurrentlyActive(TargetCue cue)
             {
                 bool currentlyActive = false;
-                for (var i = 0; i < activeCues.Count; i++)
+                for (var i = 0; i < ActiveCues.Count; i++)
                 {
-                    if (activeCues[i].cue == cue)
+                    if (ActiveCues[i].cue == cue)
                     {
                         currentlyActive = true;
                         break;
@@ -94,12 +97,12 @@ namespace TargetPreview.Scripts.Targets
             if(connection.HasValue)
                 targetConnectorManager.TryAddConnection(connection.Value.Item1, connection.Value.Item2);
             
-            activeCues.Add(targetReference);
+            ActiveCues.Add(targetReference);
         }
 
         (TargetReference, TargetReference)? FindCueConnection(TargetReference newReference)
         {
-            foreach (var targetReference in activeCues)
+            foreach (var targetReference in ActiveCues)
             {
                 if(targetReference.cue.tick == newReference.cue.tick &&
                    targetReference.cue.behavior == newReference.cue.behavior &&
@@ -115,7 +118,7 @@ namespace TargetPreview.Scripts.Targets
         void RemoveActiveCue(TargetReference reference)
         {
             targetPool.Return(reference.target);
-            activeCues.Remove(reference);
+            ActiveCues.Remove(reference);
             
             var connection = FindCueConnection(reference);
             if(connection.HasValue)

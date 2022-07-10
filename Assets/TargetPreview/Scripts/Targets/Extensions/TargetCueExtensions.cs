@@ -46,7 +46,11 @@ namespace TargetPreview.Scripts.Targets.Extensions
                 }
             }
 
-            return output.ToArray();
+            return output
+                .OrderBy(x => x.tick)
+                .ThenBy(x => (int)x.behavior)
+                .ThenBy(x => (int)x.handType)
+                .ToArray();
         }
     }
 }
