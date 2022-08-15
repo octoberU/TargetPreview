@@ -55,4 +55,4 @@ jobs:
         id: testRunner
         with:
           testMode: EditMode
-          githubToken: ${{ secrets.REPO_TOKEN }}
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
