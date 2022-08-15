@@ -22,9 +22,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Checkout submodules
-        uses: textbook/git-checkout-submodule-action@2.1.1
+        with:
+          submodules: true
 
 
       - name: Create LFS file list
