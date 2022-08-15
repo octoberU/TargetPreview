@@ -48,12 +48,8 @@ jobs:
             Library-test-project-
             Library-
 
-      - uses: webbertakken/unity-test-runner@v2
+      - uses: game-ci/unity-test-runner@v2
         id: testRunner
         with:
-          testMode: all
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: Test results (all modes)
-          path: ${{ steps.testRunner.outputs.artifactsPath }}
+          testMode: EditMode
+          githubToken: ${{ secrets.REPO_TOKEN }}
