@@ -33,9 +33,11 @@ namespace Assets.TargetPreview.Scripts.Debug
             playbackSpeed = 1f;
        
         float lastDebugTime = 0;
+
+#if UNITY_EDITOR
         void Start() =>
             LoadMockAudicaFile();
-
+#endif
         void Update()
         {
             if (debugTime > 0 && debugTime != lastDebugTime)
