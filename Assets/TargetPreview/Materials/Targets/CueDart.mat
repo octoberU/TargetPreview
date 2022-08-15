@@ -85,7 +85,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
-    - _AlphaPower: 1.69
+    - _AlphaPower: 3
     - _Blend: 0
     - _BlendOp: 0
     - _BloomBoost: 1
@@ -133,7 +133,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-    - _Color: {r: 2.6082377, g: 2.6082377, b: 2.6082377, a: 0}
+    - _Color: {r: 2.9960785, g: 2.9960785, b: 2.9960785, a: 0}
     - _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}

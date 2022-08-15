@@ -727,6 +727,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2987882771188577491, guid: 673a8f4868297ca4eb1aa55063f3f94f, type: 3}
+      propertyPath: m_Parameters.widthMultiplier
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3505446890317904449, guid: 673a8f4868297ca4eb1aa55063f3f94f, type: 3}
       propertyPath: m_Name
       value: CueDartLeft
@@ -764,6 +768,10 @@ PrefabInstance:
       propertyPath: targetManager
       value: 
       objectReference: {fileID: 805525193674342250}
+    - target: {fileID: 4946275887064091268, guid: 91ca3e10da89a5d48afa44ad5e3e7080, type: 3}
+      propertyPath: mockAudicaName
+      value: aleph-0-octo.audica
+      objectReference: {fileID: 0}
     - target: {fileID: 4946275887064091268, guid: 91ca3e10da89a5d48afa44ad5e3e7080, type: 3}
       propertyPath: timeOffsetPerTarget
       value: 100

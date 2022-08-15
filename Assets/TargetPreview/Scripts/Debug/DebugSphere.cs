@@ -22,7 +22,7 @@ namespace Assets.TargetPreview.Scripts.Debug
 
         [SerializeField] TargetManager targetManager;
         [SerializeField] CueManager cueManager;
-        
+        [SerializeField] string mockAudicaName = "GivenUp-Continuum.audica";
         [SerializeField] int pitchCount = 12;
         [SerializeField] Vector3 randomOffset;
         [SerializeField] Vector3 offset;
@@ -113,7 +113,7 @@ namespace Assets.TargetPreview.Scripts.Debug
         public Audica GetTestAudica()
         {
             string testAudicaPath = Path.Combine(Application.dataPath, "TargetPreview", "Editor", "Tests", "TestResources",
-                "GivenUp-Continuum.audica");
+                mockAudicaName);
             string fullPath = Path.GetFullPath(testAudicaPath);
 
             return new Audica(fullPath);

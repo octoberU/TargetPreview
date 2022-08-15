@@ -9,6 +9,7 @@
         _TargetTextures ("Texture", 2DArray) = "" {}
         _TextureIndex ("Texture Index", Range(0, 7)) = 0
         [HDR]_Color ("Main Color", Color) = (1,1,1,1)
+        [HDR]_FresnelColor ("Fresnel Color", Color) = (1,1,1,1)
         
         [Toggle(_RENDER_REFLECTIVE)]_RenderReflective("_RenderReflective", Float) = 0
         [Toggle(_NO_TEXTURE)]_NoTexture("_NO_TEXTURE", Float) = 0
@@ -65,6 +66,7 @@
             sampler2D _MainTex;
             half4 _MainTex_ST;
             float _FresnelPower;
+            fixed4 _FresnelColor;
 
             UNITY_DECLARE_TEX2DARRAY(_TargetTextures);
 
@@ -101,7 +103,7 @@
                 half3 reflection = reflect(-worldViewDir, i.worldNormal);
                 half4 skyData = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, reflection, _Roughness);
                 half3 skyColor = DecodeHDR(skyData, unity_SpecCube0_HDR);
-                return half4(skyColor, 1.0) * UNITY_ACCESS_INSTANCED_PROP(Props, _Color) + pow(i.fresnel, _FresnelPower);
+                return half4(skyColor, 1.0) * UNITY_ACCESS_INSTANCED_PROP(Props, _Color) + pow(i.fresnel * _FresnelColor, _FresnelPower);
 #else
                 float3 projectedCoordinates = float3(i.uv, UNITY_ACCESS_INSTANCED_PROP(Props, _TextureIndex));
                 half4 color = UNITY_ACCESS_INSTANCED_PROP(Props, _Color);

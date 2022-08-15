@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using TargetPreview.Math;
 using TargetPreview.ScriptableObjects;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace TargetPreview.Targets
 {
@@ -32,33 +33,37 @@ namespace TargetPreview.Targets
         /// </summary>
         public float verticalMeleeInfluence = .4f;
         
-        float flyInDistance => meleeFlyInDistance;
+        protected float flyInDistance => meleeFlyInDistance;
+        
+        public float approachRingMaxScale = 1.5f;
         
         
 
         int meleeDirection;
 
         [SerializeField] MeshRenderer meleeRenderer;
-        [SerializeField] Transform meleeSphereTransform;
+        [SerializeField] protected Transform approachRing;
+        [FormerlySerializedAs("meleeSphereTransform")] [SerializeField] protected Transform physicalSphereTransform;
         [SerializeField] TrailRenderer trailRenderer;
         
 
         public override void UpdateVisuals(TargetData newData)
         {
-            meleeRenderer.material = VisualConfig.Instance.meleeTargetMaterial;
             meleeDirection = targetData.transformData.position.x > 0 ? 1 : -1;
             currentHandColor = VisualConfig.GetColorForHandType(targetData.handType);
             transform.position = newData.transformData.position;
             transform.rotation = newData.transformData.rotation;
+            approachRing.GetComponent<MeshRenderer>().SetPropertyBlock(AssetContainer.Instance.GetPropertyBlockPhysicalTarget(newData.behavior, currentHandColor));//optimize
         }
 
         public override Transform GetPhysicalTargetTransform() =>
-            meleeSphereTransform;
+            physicalSphereTransform;
 
         public override void TimeUpdate(float time)
         {
 
-            meleeSphereTransform.localRotation = Quaternion.Euler(
+            bool shouldRender = ShouldRender;
+            physicalSphereTransform.localRotation = Quaternion.Euler(
                 Vector3.up * (meleeSpinSpeed * time * meleeDirection) +
                 Vector3.right * 90 * VisualConfig.Instance
                     .meleeRotationSpeed);
@@ -67,10 +72,12 @@ namespace TargetPreview.Targets
             
             var temporalDistance = TemporalDistance;
             AnimateFlyIn(temporalDistance);
+            approachRing.localScale = temporalDistance > 0.99f ? Vector3.zero : Vector3.Lerp( Vector3.zero, Vector3.one * approachRingMaxScale, temporalDistance);
+            approachRing.position = physicalSphereTransform.position;
             
             
-            meleeRenderer.enabled = ShouldRender;
-            trailRenderer.enabled = ShouldRender;
+            meleeRenderer.gameObject.SetActive(shouldRender);
+            trailRenderer.enabled = shouldRender;
         }
 
 
@@ -79,9 +86,9 @@ namespace TargetPreview.Targets
         /// </summary>
         /// <param name="distance">A 0-1 lerp used to drive the animation time.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected void AnimateFlyIn(float distance)
+        public virtual void AnimateFlyIn(float distance)
         {
-            meleeSphereTransform.localPosition = TargetTransform.MeleeParabola(Vector3.zero, GetFlyInPosition(),
+            physicalSphereTransform.localPosition = TargetTransform.MeleeParabola(Vector3.zero, GetFlyInPosition(),
                 flyInDistance * verticalMeleeInfluence, flyInDistance * horizontalInfluence, distance,
                 meleeDirection);
         }

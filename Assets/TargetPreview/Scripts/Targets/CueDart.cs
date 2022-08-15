@@ -73,13 +73,13 @@ namespace TargetPreview.Scripts.Targets
                 endPos = foundTarget?.target.transform.position ?? startPos;
 
             float cueTime = foundTarget?.cue.timeMs ?? 0f;
-            float start = cueTime - timeToReachTarget;
+            float start = previousTarget?.cue.timeMs ?? (cueTime - timeToReachTarget);
             float end = cueTime;
             float t() => (time - start) / (end - start);
             cueDartHead = Vector3.Lerp(startPos, endPos, headCompletion = t());
 
             start -= cueDartTailLag;
-            cueDartTail = Vector3.Lerp(startPos, endPos, tailCompletion = t());
+            cueDartTail = Vector3.Lerp(startPos, endPos, tailCompletion = t() * t());
         }
 
         void UpdateLineRenderer()
