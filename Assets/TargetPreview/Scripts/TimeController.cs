@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace TargetPreview.Scripts
 {
@@ -23,10 +24,19 @@ namespace TargetPreview.Scripts
         }
         public static void RemoveListener(IReceiveTimeUpdates receiveTimeUpdates) =>
             updatesArray.Remove(receiveTimeUpdates);
+        
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        public static void StaticReset()
+        {
+            updatesArray.Clear();
+            Time = 0;
+        }
     }
 
     public interface IReceiveTimeUpdates
     {
         public void OnTimeUpdated(float time);
     }
+    
+
 }

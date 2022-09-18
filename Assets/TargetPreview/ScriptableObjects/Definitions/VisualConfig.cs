@@ -32,7 +32,7 @@ namespace TargetPreview.ScriptableObjects
             targetSpeedMultiplierStatic,
             meleeSpeedMultiplierStatic;
 
-        [RuntimeInitializeOnLoadMethod]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         public void UpdateStaticValues()
         {
             targetSpeedMultiplierStatic = targetSpeedMultiplier;

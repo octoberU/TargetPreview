@@ -47,5 +47,6 @@ public class TargetManager : MonoBehaviour, IReceiveTimeUpdates
         UpdateManagedTargets();
     }
     
-    
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    public static void ResetTime() => Time = 0;
 }
